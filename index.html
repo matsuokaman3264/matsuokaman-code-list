@@ -2,329 +2,35 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>松岡満運輸 コード一覧表</title>
+  <title>地名コード検索＋OCR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background-color: #f7f7f7;
-      text-align: center;
-    }
-
-    input {
-      font-size: 1.5em;
-      padding: 10px;
-      width: 90%;
-      max-width: 400px;
-      margin-bottom: 20px;
-    }
-
-    #suggestions {
-      margin-top: 10px;
-      font-size: 1.2em;
-      max-height: 300px;
-      overflow-y: auto;
-      text-align: left;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .suggestion {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    .suggestion:hover {
-      background-color: #eee;
-    }
-
-    #result {
-      margin-top: 30px;
-      font-size: 2em;
-      font-weight: bold;
-      color: red;
-    }
+    body { font-family: sans-serif; padding: 20px; background-color: #f7f7f7; text-align: center; }
+    input { font-size: 1.5em; padding: 10px; width: 90%; max-width: 400px; margin-bottom: 20px; }
+    video { width: 90%; max-width: 400px; border: 1px solid #ccc; margin-top: 10px; }
+    button { font-size: 1em; padding: 10px 20px; margin-bottom: 10px; }
+    #suggestions { font-size: 1.2em; max-height: 300px; overflow-y: auto; text-align: left; width: 100%; max-width: 500px; margin: 0 auto; }
+    .suggestion { padding: 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
+    .suggestion:hover { background-color: #eee; }
+    #result { margin-top: 20px; font-size: 2em; font-weight: bold; color: red; }
   </style>
 </head>
 <body>
-  <h1>松岡満運輸 地名コード検索</h1>
-  <input type="text" id="searchInput" placeholder="ひらがなで入力（例：あさひかわ）" oninput="filterSuggestions()">
-  
+  <h1>地名コード検索＋OCR</h1>
+  <input type="text" id="searchInput" placeholder="ひらがな or 漢字（例：あさひかわ or 川）" oninput="filterSuggestions()">
   <div id="suggestions"></div>
   <div id="result"></div>
+  <button onclick="startCamera()">📷 カメラで読み取り開始</button>
+  <video id="video" autoplay muted playsinline></video>
 
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
   <script>
     const data = [
-{ hiragana: "あいべつ", kanji: "愛別町", code: "40-2" },
-{ hiragana: "あかいがわ", kanji: "赤井川村", code: "20-1" },
-{ hiragana: "あかびらし", kanji: "赤平市", code: "47-6" },
-{ hiragana: "あかん", kanji: "阿寒町", code: "61-4" },
-{ hiragana: "あさひ", kanji: "朝日町", code: "45-3※後部" },
-{ hiragana: "あさひかわ", kanji: "旭川市", code: "40-0" },
-{ hiragana: "あしべつ", kanji: "芦別市", code: "47-5" },
-{ hiragana: "あしょろ", kanji: "足寄町", code: "60-5" },
-{ hiragana: "あっけし", kanji: "厚岸町", code: "61-1" },
-{ hiragana: "あっさぶ", kanji: "厚沢部町", code: "21-4" },
-{ hiragana: "あつた", kanji: "厚田村", code: "10-5" },
-{ hiragana: "あつま", kanji: "厚真町", code: "31-3" },
-{ hiragana: "あばしり", kanji: "網走市", code: "51-0※後部" },
-{ hiragana: "あびら", kanji: "安平町", code: "31-4" },
-{ hiragana: "あぶた", kanji: "虻田町", code: "22-8" },
-{ hiragana: "いくたはら", kanji: "生田原町", code: "50-5" },
-{ hiragana: "いけだ", kanji: "池田町", code: "60-8" },
-{ hiragana: "いしかり", kanji: "石狩新港西1丁目", code: "10-1" },
-{ hiragana: "いしかり", kanji: "石狩新港西2丁目", code: "10-2" },
-{ hiragana: "いしかり", kanji: "石狩新港西3丁目", code: "10-3" },
-{ hiragana: "いしかり", kanji: "石狩新港中央", code: "10-4" },
-{ hiragana: "いしかり", kanji: "石狩新港南", code: "10-4" },
-{ hiragana: "いしかり", kanji: "石狩新港東", code: "10-4" },
-{ hiragana: "いしかり", kanji: "石狩市花川・花畔", code: "10-5" },
-{ hiragana: "いしかり", kanji: "石狩市厚田区・浜益区", code: "10-5" },
-{ hiragana: "いしかり", kanji: "石狩市上記以外", code: "10-5" },
-{ hiragana: "いまかね", kanji: "今金町", code: "29-6" },
-{ hiragana: "いわない", kanji: "岩内町", code: "22-5" },
-{ hiragana: "いわみざわ", kanji: "岩見沢市", code: "13-0" },
-{ hiragana: "うたしない", kanji: "歌志内市", code: "11-8" },
-{ hiragana: "うたのぼり", kanji: "歌登町", code: "45-4※後部" },
-{ hiragana: "うらうす", kanji: "浦臼町", code: "11-7" },
-{ hiragana: "うらかわ", kanji: "浦河町", code: "39-3" },
-{ hiragana: "うらほろ", kanji: "浦幌町", code: "60-4" },
-{ hiragana: "うりゅう", kanji: "雨竜町", code: "11-9" },
-{ hiragana: "えさし", kanji: "江差町", code: "21-4" },
-{ hiragana: "えさし", kanji: "枝幸町", code: "45-4※後部" },
-{ hiragana: "えさし", kanji: "枝幸町徳志別", code: "52-5※後部" },
-{ hiragana: "えさし", kanji: "枝幸町上徳志別", code: "52-5※後部" },
-{ hiragana: "えさし", kanji: "枝幸町山臼", code: "52-5※後部" },
-{ hiragana: "えさし", kanji: "枝幸町乙忠部", code: "52-5※後部" },
-{ hiragana: "えさし", kanji: "枝幸町風烈布", code: "52-5※後部" },
-{ hiragana: "えさし", kanji: "枝幸町音標", code: "52-5※後部" },
-{ hiragana: "えさし", kanji: "枝幸町上音標", code: "52-5※後部" },
-{ hiragana: "えさん", kanji: "恵山町", code: "21-1" },
-{ hiragana: "えにわ", kanji: "恵庭市", code: "12-5" },
-{ hiragana: "えべつ", kanji: "江別市（日生協）", code: "12-0" },
-{ hiragana: "えべつ", kanji: "江別市", code: "12-1" },
-{ hiragana: "えりも", kanji: "えりも町", code: "39-4" },
-{ hiragana: "えんがる", kanji: "遠軽町", code: "50-5" },
-{ hiragana: "えんべつ", kanji: "遠別町", code: "43-3※後部" },
-{ hiragana: "おいわけ", kanji: "追分", code: "31-4" },
-{ hiragana: "あびら", kanji: "安平町", code: "31-4" },
-{ hiragana: "おおぞら", kanji: "大空町", code: "51-1※後部" },
-{ hiragana: "おうむ", kanji: "雄武町", code: "52-3※後部" },
-{ hiragana: "おおたき", kanji: "大滝村", code: "22-8" },
-{ hiragana: "おおの", kanji: "大野町", code: "21-2" },
-{ hiragana: "おくしり", kanji: "奥尻町", code: "21-6" },
-{ hiragana: "おけと", kanji: "置戸町", code: "50-4" },
-{ hiragana: "おこっぺ", kanji: "興部町", code: "52-3※後部" },
-{ hiragana: "おしゃまんべ", kanji: "長万部町", code: "29-4" },
-{ hiragana: "おたる", kanji: "小樽市", code: "20-0" },
-{ hiragana: "おたる", kanji: "小樽市銭函", code: "10-0" },
-{ hiragana: "おたる", kanji: "小樽市星野町", code: "10-0" },
-{ hiragana: "おたる", kanji: "小樽市見晴町", code: "10-0" },
-{ hiragana: "おたる", kanji: "小樽市桂岡町", code: "10-0" },
-{ hiragana: "おたる", kanji: "小樽市張碓町", code: "10-0" },
-{ hiragana: "おたる", kanji: "小樽市春香町", code: "10-0" },
-{ hiragana: "おとべ", kanji: "乙部町", code: "21-4" },
-{ hiragana: "おといねっぷ", kanji: "音威子府村", code: "45-4※後部" },
-{ hiragana: "おとふけ", kanji: "音更町", code: "60-2" },
-{ hiragana: "おびひろ", kanji: "帯広市", code: "60-0" },
-{ hiragana: "おびら", kanji: "小平町", code: "41-2※後部" },
-{ hiragana: "おんべつ", kanji: "音別町", code: "61-2" },
-{ hiragana: "かみいそ", kanji: "上磯町", code: "21-2" },
-{ hiragana: "かみかわ", kanji: "上川町", code: "40-2" },
-{ hiragana: "かみしほろ", kanji: "上士幌町", code: "60-5" },
-{ hiragana: "かみすながわ", kanji: "上砂川町", code: "11-8" },
-{ hiragana: "かみのくに", kanji: "上ノ国町", code: "21-4" },
-{ hiragana: "かみふらの", kanji: "上富良野町", code: "47-2" },
-{ hiragana: "かみゆうべつ", kanji: "上湧別町", code: "52-2※後部" },
-{ hiragana: "かむえない", kanji: "神恵内村", code: "22-7" },
-{ hiragana: "きこない", kanji: "木古内町", code: "21-2" },
-{ hiragana: "きたひやま", kanji: "北檜山町", code: "29-6" },
-{ hiragana: "きたひろしま", kanji: "北広島市", code: "12-6" },
-{ hiragana: "きたみ", kanji: "北見市", code: "50-0" },
-{ hiragana: "きたむら", kanji: "北村", code: "13-0" },
-{ hiragana: "きもべつ", kanji: "喜茂別町", code: "22-2" },
-{ hiragana: "きょうわ", kanji: "共和町", code: "22-6" },
-{ hiragana: "きょうごく", kanji: "京極町", code: "22-1" },
-{ hiragana: "きよさと", kanji: "清里町", code: "51-2※後部" },
-{ hiragana: "くしろ", kanji: "釧路市", code: "61-0" },
-{ hiragana: "くしろ", kanji: "釧路町", code: "61-0" },
-{ hiragana: "くっちゃん", kanji: "俱知安町", code: "22-0" },
-{ hiragana: "くまいし", kanji: "熊石町", code: "29-7" },
-{ hiragana: "くりさわ", kanji: "栗沢町", code: "13-0" },
-{ hiragana: "くりやま", kanji: "栗山町", code: "12-2" },
-{ hiragana: "くろまつない", kanji: "黒松内町", code: "29-4" },
-{ hiragana: "くんねっぷ", kanji: "訓子府町", code: "50-4" },
-{ hiragana: "けんぶち", kanji: "剣淵町", code: "45-3※後部" },
-{ hiragana: "こしみず", kanji: "小清水町", code: "51-2※後部" },
-{ hiragana: "さっぽろ", kanji: "札幌市中央区", code: "C-1" },
-{ hiragana: "さっぽろ", kanji: "札幌市南区", code: "C-2" },
-{ hiragana: "さっぽろ", kanji: "札幌市豊平区", code: "C-3" },
-{ hiragana: "さっぽろ", kanji: "札幌市清田区", code: "C-4" },
-{ hiragana: "さっぽろ", kanji: "札幌市白石区", code: "C-5" },
-{ hiragana: "さっぽろ", kanji: "札幌市白石区流通センター", code: "C-6" },
-{ hiragana: "さっぽろ", kanji: "札幌市厚別区", code: "C-6" },
-{ hiragana: "さっぽろ", kanji: "札幌市北区", code: "C-7" },
-{ hiragana: "さっぽろ", kanji: "札幌市東区", code: "C-8" },
-{ hiragana: "さっぽろ", kanji: "札幌市手稲区", code: "C-9" },
-{ hiragana: "さっぽろ", kanji: "札幌市西区", code: "C-10" },
-{ hiragana: "さっぽろ", kanji: "建材・特定品", code: "C-00" },
-{ hiragana: "さまに", kanji: "様似町", code: "39-4" },
-{ hiragana: "さらべつ", kanji: "更別村", code: "60-9" },
-{ hiragana: "さるふつ", kanji: "猿払村", code: "43-1※後部" },
-{ hiragana: "さろま", kanji: "佐呂間町", code: "50-3" },
-{ hiragana: "さわら", kanji: "砂原町", code: "29-3" },
-{ hiragana: "しかおい", kanji: "鹿追町", code: "60-6" },
-{ hiragana: "しかべ", kanji: "鹿部町", code: "21-1" },
-{ hiragana: "しずない", kanji: "静内町", code: "39-0" },
-{ hiragana: "しべつ", kanji: "士別市", code: "45-3※後部" },
-{ hiragana: "しべちゃ", kanji: "標茶町", code: "64-2" },
-{ hiragana: "しべつ", kanji: "標津町", code: "64-2※後部" },
-{ hiragana: "しほろ", kanji: "士幌町", code: "60-5" },
-{ hiragana: "しままき", kanji: "島牧村", code: "29-5" },
-{ hiragana: "しみず", kanji: "清水町", code: "60-6" },
-{ hiragana: "しむかっぷ", kanji: "占冠村", code: "47-4" },
-{ hiragana: "しもかわ", kanji: "下川町", code: "45-2※後部" },
-{ hiragana: "しらおい", kanji: "白老町", code: "31-2" },
-{ hiragana: "しらたき", kanji: "白滝村", code: "50-5" },
-{ hiragana: "しらぬか", kanji: "白糠町", code: "61-2" },
-{ hiragana: "しりうち", kanji: "知内町", code: "21-5" },
-{ hiragana: "しゃこたん", kanji: "積丹町", code: "20-1" },
-{ hiragana: "しゃり", kanji: "斜里町", code: "51-2" },
-{ hiragana: "しょさんべつ", kanji: "初山別村", code: "41-2※後部" },
-{ hiragana: "しんとく", kanji: "新得町", code: "60-6" },
-{ hiragana: "しんしのつ", kanji: "新篠津村", code: "12-1" },
-{ hiragana: "しんとつかわ", kanji: "新十津川町", code: "11-7" },
-{ hiragana: "しんひだか", kanji: "新ひだか町", code: "39-0" },
-{ hiragana: "すながわ", kanji: "砂川市", code: "11-2" },
-{ hiragana: "すっつ", kanji: "寿都町", code: "29-5" },
-{ hiragana: "せたな", kanji: "瀬棚町", code: "29-6" },
-{ hiragana: "そうべつ", kanji: "壮瞥町", code: "22-8" },
-{ hiragana: "たいき", kanji: "大樹町", code: "60-9" },
-{ hiragana: "たいせい", kanji: "大成町", code: "29-7" },
-{ hiragana: "たかす", kanji: "鷹栖町", code: "40-1" },
-{ hiragana: "たきかわ", kanji: "滝川市", code: "11-1" },
-{ hiragana: "たきのうえ", kanji: "滝上市", code: "52-4※後部" },
-{ hiragana: "だて", kanji: "伊達市", code: "30-2" },
-{ hiragana: "だて", kanji: "伊達市大滝区", code: "22-8" },
-{ hiragana: "たんの", kanji: "端野町", code: "50-0" },
-{ hiragana: "ちっぷべつ", kanji: "秩父別町", code: "40-4" },
-{ hiragana: "ちとせ", kanji: "千歳市", code: "12-4" },
-{ hiragana: "ちとせ", kanji: "千歳市空港", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市支笏湖", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市支寒内", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市美笛", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市幌見内", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市水明郷", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市モラップ", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市奥譚", code: "12-9" },
-{ hiragana: "ちとせ", kanji: "千歳市幌加", code: "12-4" },
-{ hiragana: "ちゅうるい", kanji: "忠類村", code: "60-9" },
-{ hiragana: "つきがた", kanji: "月形町", code: "11-6" },
-{ hiragana: "つべつ", kanji: "津別町", code: "50-1" },
-{ hiragana: "つるい", kanji: "鶴居村", code: "61-4" },
-{ hiragana: "てうり", kanji: "天売町", code: "41-3※後部" },
-{ hiragana: "てしお", kanji: "天塩町", code: "43-3※後部" },
-{ hiragana: "てしかが", kanji: "弟子屈町", code: "61-3" },
-{ hiragana: "とい", kanji: "戸井町", code: "21-1" },
-{ hiragana: "とうべつ", kanji: "当別町", code: "12-1" },
-{ hiragana: "とうま", kanji: "当麻町", code: "40-2" },
-{ hiragana: "とうや", kanji: "洞爺村", code: "22-8" },
-{ hiragana: "とうやこ", kanji: "洞爺湖町", code: "22-8" },
-{ hiragana: "ところ", kanji: "常呂町", code: "50-3" },
-{ hiragana: "とどほっけ", kanji: "椴法華町", code: "21-1" },
-{ hiragana: "とまこまい", kanji: "苫小牧市", code: "31-0" },
-{ hiragana: "とままえ", kanji: "苫前町", code: "41-2※後部" },
-{ hiragana: "とまり", kanji: "泊村", code: "22-7" },
-{ hiragana: "とようら", kanji: "豊浦町", code: "22-8" },
-{ hiragana: "とよころ", kanji: "豊頃町", code: "60-4" },
-{ hiragana: "とよとみ", kanji: "豊富町", code: "43-2※後部" },
-{ hiragana: "ないえ", kanji: "奈井江町", code: "11-3" },
-{ hiragana: "なかがわ", kanji: "中川町", code: "43-2※後部" },
-{ hiragana: "なかさつない", kanji: "中札内村", code: "60-9" },
-{ hiragana: "なかしべつ", kanji: "中標津町", code: "64-0※後部" },
-{ hiragana: "なかとんべつ", kanji: "中頓別町", code: "45-4※後部" },
-{ hiragana: "なかふらの", kanji: "中富良野町", code: "47-3※後部" },
-{ hiragana: "ながぬま", kanji: "長沼町", code: "12-3" },
-{ hiragana: "ななえ", kanji: "七飯町", code: "21-3" },
-{ hiragana: "なよろ", kanji: "名寄市", code: "45-0※後部" },
-{ hiragana: "なんぽろ", kanji: "南幌町", code: "12-2" },
-{ hiragana: "にき", kanji: "仁木町", code: "20-1" },
-{ hiragana: "にしおこっぺ", kanji: "西興部村", code: "52-3※後部" },
-{ hiragana: "にせこ", kanji: "ニセコ町", code: "22-4" },
-{ hiragana: "ひらふ", kanji: "比羅夫", code: "22-4" },
-{ hiragana: "にいかっぷ", kanji: "新冠町", code: "39-1" },
-{ hiragana: "ぬまた", kanji: "沼田町", code: "40-4" },
-{ hiragana: "ねむろ", kanji: "根室市", code: "62-0※後部" },
-{ hiragana: "のぼりべつ", kanji: "登別市", code: "30-1" },
-{ hiragana: "はこだて", kanji: "函館市", code: "21-0" },
-{ hiragana: "はぼろ", kanji: "羽幌町", code: "41-2※後部" },
-{ hiragana: "はまなか", kanji: "浜中町", code: "61-1" },
-{ hiragana: "はまとんべつ", kanji: "浜頓別町", code: "45-4※後部" },
-{ hiragana: "はまます", kanji: "浜益村", code: "10-5" },
-{ hiragana: "はやきた", kanji: "早来町", code: "31-4" },
-{ hiragana: "びえい", kanji: "美瑛町", code: "47-1" },
-{ hiragana: "ひがしかぐら", kanji: "東神楽町", code: "40-3" },
-{ hiragana: "ひがしかわ", kanji: "東川町", code: "40-3" },
-{ hiragana: "ひがしもこと", kanji: "東藻琴村", code: "51-1" },
-{ hiragana: "ひだか", kanji: "日高町", code: "39-2" },
-{ hiragana: "ぴっぷ", kanji: "比布町", code: "40-2" },
-{ hiragana: "びばい", kanji: "美唄市", code: "11-0" },
-{ hiragana: "びふか", kanji: "美深町", code: "45-1※後部" },
-{ hiragana: "びほろ", kanji: "美幌町", code: "50-2" },
-{ hiragana: "ひらとり", kanji: "平取町", code: "39-2" },
-{ hiragana: "ひろお", kanji: "広尾町", code: "60-9" },
-{ hiragana: "ふうれん", kanji: "風連町", code: "45-0※後部" },
-{ hiragana: "ふかがわ", kanji: "深川市", code: "40-5" },
-{ hiragana: "ふくしま", kanji: "福島町", code: "21-5" },
-{ hiragana: "ふらの", kanji: "富良野市", code: "47-0" },
-{ hiragana: "ふるびら", kanji: "古平町", code: "20-1" },
-{ hiragana: "べっかい", kanji: "別海町", code: "64-1※後部" },
-{ hiragana: "ほくと", kanji: "北斗市", code: "21-2" },
-{ hiragana: "ほくりゅう", kanji: "北竜町", code: "40-4" },
-{ hiragana: "ほべつ", kanji: "穂別町", code: "31-3" },
-{ hiragana: "ほろかない", kanji: "幌加内町", code: "40-4" },
-{ hiragana: "ほろのべ", kanji: "幌延町", code: "43-2※後部" },
-{ hiragana: "ほんべつ", kanji: "本別町", code: "60-8" },
-{ hiragana: "まくべつ", kanji: "幕別町", code: "60-4" },
-{ hiragana: "まくべつ", kanji: "幕別町札内", code: "60-3" },
-{ hiragana: "ましけ", kanji: "増毛町", code: "41-1※後部" },
-{ hiragana: "まっかり", kanji: "真狩村", code: "22-3" },
-{ hiragana: "まつまえ", kanji: "松前町", code: "21-5" },
-{ hiragana: "まるせっぷ", kanji: "丸瀬布町", code: "50-5" },
-{ hiragana: "みかさ", kanji: "三笠市", code: "11-4" },
-{ hiragana: "みついし", kanji: "三石町", code: "39-0" },
-{ hiragana: "みなみかやべ", kanji: "南茅部町", code: "21-1" },
-{ hiragana: "みなみふらの", kanji: "南富良野町", code: "47-4" },
-{ hiragana: "むかわ", kanji: "鵡川町", code: "31-3" },
-{ hiragana: "むろらん", kanji: "室蘭市", code: "30-0" },
-{ hiragana: "めまんべつ", kanji: "女満別町", code: "51-1※後部" },
-{ hiragana: "めむろ", kanji: "芽室町", code: "60-1" },
-{ hiragana: "もせうし", kanji: "妹背牛町", code: "40-4" },
-{ hiragana: "もり", kanji: "森町", code: "29-2" },
-{ hiragana: "もり", kanji: "森町砂原", code: "29-3" },
-{ hiragana: "もんべつ", kanji: "紋別市", code: "52-0※後部" },
-{ hiragana: "もんべつ", kanji: "門別市", code: "39-2" },
-{ hiragana: "やぎしり", kanji: "焼尻町", code: "41-3※後部" },
-{ hiragana: "やぐも", kanji: "八雲町", code: "29-0" },
-{ hiragana: "やぐも", kanji: "八雲町落部", code: "29-1" },
-{ hiragana: "ゆうべつ", kanji: "湧別町", code: "52-2※後部" },
-{ hiragana: "ゆうばり", kanji: "夕張市", code: "12-3" },
-{ hiragana: "ゆに", kanji: "由仁町", code: "12-3" },
-{ hiragana: "よいち", kanji: "余市町", code: "20-1" },
-{ hiragana: "らうす", kanji: "羅臼町", code: "64-3※後部" },
-{ hiragana: "らんこし", kanji: "蘭越町", code: "22-4" },
-{ hiragana: "りくべつ", kanji: "陸別町", code: "60-7" },
-{ hiragana: "りしり", kanji: "利尻町", code: "43-4※後部" },
-{ hiragana: "るすつ", kanji: "留寿都町", code: "22-3" },
-{ hiragana: "るべしべ", kanji: "留辺蘂町", code: "50-4" },
-{ hiragana: "るもい", kanji: "留萌市", code: "41-0※後部" },
-{ hiragana: "れぶん", kanji: "礼文町", code: "43-4※後部" },
-{ hiragana: "わっかない", kanji: "稚内市", code: "43-0※後部" },
-{ hiragana: "わっさむ", kanji: "和寒町", code: "45-3※後部" }
-      // 地名リストをここに追加可能（大量対応OK）
+      { hiragana: "あさひかわ", kanji: "旭川市", code: "40-1" },
+      { hiragana: "あかいがわ", kanji: "赤井川村", code: "20-1" },
+      { hiragana: "くしろ", kanji: "釧路市", code: "60-2" },
+      { hiragana: "あかん", kanji: "阿寒町", code: "61-4" },
+      { hiragana: "わっさむ", kanji: "和寒町", code: "45-3※後部" }
     ];
 
     function filterSuggestions() {
@@ -336,7 +42,9 @@
 
       if (input === "") return;
 
-      const matches = data.filter(item => item.hiragana.startsWith(input));
+      const matches = data.filter(item =>
+        item.hiragana.startsWith(input) || item.kanji.includes(input)
+      );
 
       matches.forEach(match => {
         const div = document.createElement("div");
@@ -347,6 +55,28 @@
         };
         suggestionsDiv.appendChild(div);
       });
+    }
+
+    async function startCamera() {
+      const video = document.getElementById("video");
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      video.srcObject = stream;
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      setInterval(async () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const { data: { text } } = await Tesseract.recognize(canvas, 'jpn', { logger: m => {} });
+        const clean = text.replace(/\s/g, "").slice(0, 10);
+        if (clean) {
+          document.getElementById("searchInput").value = clean;
+          filterSuggestions();
+        }
+      }, 5000); // 5秒ごとに文字認識
     }
   </script>
 </body>
