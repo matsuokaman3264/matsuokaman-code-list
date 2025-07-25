@@ -47,11 +47,24 @@
       font-weight: bold;
       color: red;
     }
+
+    .furigana {
+      display: block;
+      font-size: 0.6em;
+      color: #555;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
   <h1>松岡満運輸 店所コード検索</h1>
-  <input type="text" id="searchInput" placeholder="ひらがなや漢字を入力" oninput="filterSuggestions()">
+  <input 
+    type="text" 
+    id="searchInput" 
+    placeholder="ひらがなや漢字を入力" 
+    oninput="filterSuggestions()" 
+    onkeydown="if(event.key === 'Enter'){ this.blur(); }"
+  >
   
   <div id="suggestions"></div>
   <div id="result"></div>
@@ -343,9 +356,15 @@
       matches.forEach(match => {
         const div = document.createElement("div");
         div.className = "suggestion";
-        div.textContent = `${match.kanji}（${match.code}）`;
+        div.innerHTML = `
+          ${match.kanji}（${match.code}）
+          <span class="furigana">読み：${match.hiragana}</span>
+        `;
         div.onclick = () => {
-          resultDiv.textContent = `${match.kanji}（${match.code}）`;
+          resultDiv.innerHTML = `
+            ${match.kanji}（${match.code}）
+            <span class="furigana">読み：${match.hiragana}</span>
+          `;
         };
         suggestionsDiv.appendChild(div);
       });
