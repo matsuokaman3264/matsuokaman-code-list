@@ -357,7 +357,9 @@
         const div = document.createElement("div");
         div.className = "suggestion";
         div.innerHTML = `
-          ${match.kanji}（${match.code}）
+          <span style="color: ${match.color || 'red'};">
+            ${match.kanji}（${match.code}）
+          </span>
           <span class="furigana">読み：${match.hiragana}</span>
         `;
         div.onclick = () => {
