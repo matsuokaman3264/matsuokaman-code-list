@@ -260,7 +260,7 @@
 { hiragana: "なかさつない", kanji: "中札内村", code: "60-9" },
 { hiragana: "なかしべつ", kanji: "中標津町", code: "64-0※後部" },
 { hiragana: "なかとんべつ", kanji: "中頓別町", code: "45-4※後部" },
-{ hiragana: "なかふらの", kanji: "中富良野町", code: "47-3※後部" },
+{ hiragana: "なかふらの", kanji: "中富良野町", code: "47-3" },
 { hiragana: "ながぬま", kanji: "長沼町", code: "12-3", color: "blue" },
 { hiragana: "ななえ", kanji: "七飯町", code: "21-3" },
 { hiragana: "なよろ", kanji: "名寄市", code: "45-0※後部" },
@@ -352,9 +352,15 @@
 
       if (input === "") return;
 
-      const matches = data.filter(item => 
-        item.hiragana.startsWith(input) || item.kanji.includes(input)
-      );
+const matches = data
+  .filter(item => 
+    item.hiragana.startsWith(input) || item.kanji.includes(input)
+  )
+  .sort((a, b) => {
+    const aIsBlue = a.color === "blue" ? 1 : 0;
+    const bIsBlue = b.color === "blue" ? 1 : 0;
+    return aIsBlue - bIsBlue;
+  });
 
       matches.forEach(match => {
         const div = document.createElement("div");
