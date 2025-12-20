@@ -371,22 +371,15 @@ let lastKeyword = "";
         item.hiragana.startsWith(input) || item.kanji.includes(input)
       );
 
-      // ===== エンゲージメント計測 =====
-      if (input !== lastKeyword) {
-        if (matches.length === 0) {
-          // ヒットなし
-          gtag('event', 'site_search_no_hit', {
-            search_term: input
-          });
-        } else {
-          // ヒットあり
-          gtag('event', 'site_search', {
-            search_term: input
-          });
-        }
-        lastKeyword = input;
-      }
-      // ================================
+// ===== エンゲージメント計測（GA4対応）=====
+if (input !== lastKeyword) {
+  gtag('event', 'view_search_results', {
+    search_term: input,
+    search_result: matches.length > 0 ? 'hit' : 'no_hit'
+  });
+  lastKeyword = input;
+}
+// ==========================================
 
       matches.forEach(match => {
         const div = document.createElement("div");
