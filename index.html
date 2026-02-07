@@ -55,7 +55,6 @@
       margin-top: 30px;
       font-size: 2em;
       font-weight: bold;
-      color: red;
     }
 
     .furigana {
@@ -352,10 +351,9 @@
 { hiragana: "れぶん", kanji: "礼文町", code: "43-4※後部" },
 { hiragana: "わっかない", kanji: "稚内市", code: "43-0※後部" },
 { hiragana: "わっさむ", kanji: "和寒町", code: "45-3※後部" }
-      // 地名をここに追加できます
     ];
 
-let lastKeyword = "";
+    let lastKeyword = "";
 
     function filterSuggestions() {
       const input = document.getElementById("searchInput").value.trim();
@@ -363,7 +361,7 @@ let lastKeyword = "";
       const resultDiv = document.getElementById("result");
 
       suggestionsDiv.innerHTML = "";
-      resultDiv.textContent = "";
+      resultDiv.innerHTML = "";
 
       if (input === "") return;
 
@@ -371,33 +369,36 @@ let lastKeyword = "";
         item.hiragana.startsWith(input) || item.kanji.includes(input)
       );
 
-// ===== エンゲージメント計測（GA4対応）=====
-if (input !== lastKeyword) {
-  gtag('event', 'view_search_results', {
-    search_term: input,
-    search_result: matches.length > 0 ? 'hit' : 'no_hit'
-  });
-  lastKeyword = input;
-}
-// ==========================================
+      if (input !== lastKeyword) {
+        gtag('event', 'view_search_results', {
+          search_term: input,
+          search_result: matches.length > 0 ? 'hit' : 'no_hit'
+        });
+        lastKeyword = input;
+      }
 
       matches.forEach(match => {
         const div = document.createElement("div");
         div.className = "suggestion";
+
+        const textColor = match.color ? match.color : "red";
+
         div.innerHTML = `
-          <span style="color: red;">
+          <span style="color: ${textColor};">
             ${match.kanji}（${match.code}）
           </span>
           <span class="furigana">読み：${match.hiragana}</span>
         `;
+
         div.onclick = () => {
           resultDiv.innerHTML = `
-            <span style="color: red;">
+            <span style="color: ${textColor};">
               ${match.kanji}（${match.code}）
             </span>
             <span class="furigana">読み：${match.hiragana}</span>
           `;
         };
+
         suggestionsDiv.appendChild(div);
       });
     }
