@@ -533,12 +533,18 @@ function changeImage() {
 
   currentIndex = getRandomIndex();
 
+  // 先にフェードアウト
   img.style.opacity = 0;
 
-  setTimeout(() => {
-    img.src = images[currentIndex];
+  // 新しい画像をロード
+  const nextSrc = images[currentIndex];
+
+  img.onload = () => {
+    // 読み込み完了後にフェードイン
     img.style.opacity = 1;
-  }, 1000);
+  };
+
+  img.src = nextSrc;
 }
 
 function startSlideShow() {
