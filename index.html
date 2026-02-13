@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>まつおかまん　店舗コード検索</title>
+<title>まつおかまん 店所コード検索</title>
 
 <style>
 body{
@@ -12,17 +12,26 @@ body{
   text-align:center;
 }
 
+/* ===== タイトル ===== */
+h1{
+  margin:20px 0 10px 0;
+  line-height:1.2em;
+}
+
 /* ===== トップ画像 ===== */
 #randomImage{
   display:block;
-  margin:20px auto 0;
+  margin:0 auto;
   width:auto;
   max-width:100%;
   height:50vh;
   object-fit:contain;
+  opacity:0;
+  transition: opacity 1s ease;
+}
 
+.fade-in{
   opacity:1;
-  transition:opacity 1.0s ease;
 }
 
 .fade-out{
@@ -71,13 +80,12 @@ input{
 
 <body>
 
-<!-- ===== トップ画面 ===== -->
+<h1>まつおかまん<br>店所コード検索</h1>
+
+<!-- ===== トップ画像 ===== -->
 <div id="top">
-  <h1>まつおかまん<br>店所コード検索</h1>
-
   <img id="randomImage" src="" alt="random image">
-
-  <div>
+  <div style="margin-top:20px;">
     <button onclick="startSearch('city')">市で見る</button>
     <button onclick="startSearch('gun')">郡で見る</button>
     <button onclick="startSearch('zip')">全てから見る</button>
@@ -95,7 +103,7 @@ input{
 
 <script>
 /* ===============================
-   検索データ（ここを編集）
+   検索データ
 ================================ */
 const data = [
 
@@ -384,23 +392,35 @@ function goTop(){
 }
 
 /* ===============================
-   検索処理
+   検索処理（文字入力で自動検索）
 ================================ */
 function searchData(){
   let input = searchInput.value.trim();
   results.innerHTML = "";
-
   if(!input) return;
 
+  let filtered = [];
 
-  const filtered = data.filter(d =>
-    d.type === currentMode &&
-    (
-      (d.hiragana && d.hiragana.includes(input)) ||
-      (d.kanji && d.kanji.includes(input)) ||
-      (d.zipcode && d.zipcode === input)
-    )
-  );
+  if(currentMode === "city"){
+    filtered = data.filter(d =>
+      d.type === "city" &&
+      ((d.hiragana && d.hiragana.includes(input)) || (d.kanji && d.kanji.includes(input)))
+    );
+  } else if(currentMode === "gun"){
+    filtered = data.filter(d =>
+      d.type === "gun" &&
+      ((d.hiragana && d.hiragana.includes(input)) || (d.kanji && d.kanji.includes(input)))
+    );
+  } else if(currentMode === "zip"){
+    filtered = data.filter(d =>
+      (d.type === "city" || d.type === "gun") &&
+      (
+        (d.hiragana && d.hiragana.includes(input)) ||
+        (d.kanji && d.kanji.includes(input)) ||
+        (d.zip && d.zip.includes(input))
+      )
+    );
+  }
 
   showResults(filtered);
 }
@@ -418,20 +438,14 @@ function showResults(list){
     div.innerHTML = `
       <div class="code" style="color:${color};">${d.code}</div>
       <div><strong>${d.kanji}</strong></div>
-      ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
       ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
     `;
     results.appendChild(div);
   });
 }
 
-/* Enterキー検索 & スマホでキーボードを閉じる */
-searchInput.addEventListener("keydown", e => {
-  if(e.key === "Enter"){
-    searchData();
-    searchInput.blur();
-  }
-});
+/* 入力時に自動検索 */
+searchInput.addEventListener("input", searchData);
 
 /* ===============================
    画像設定（index.htmlと同階層）
@@ -456,26 +470,28 @@ images.forEach(src => {
   img.src = src;
 });
 
-/* スライド制御 */
+/* スライド制御 + フェード */
 let currentIndex = Math.floor(Math.random() * images.length);
 const INTERVAL = 5000;
-const FADE_TIME = 1000;
 
 function changeImage(){
   const img = document.getElementById("randomImage");
+  img.classList.remove("fade-in");
   img.classList.add("fade-out");
 
   setTimeout(() => {
     currentIndex = (currentIndex + 1) % images.length;
     img.src = images[currentIndex];
     img.classList.remove("fade-out");
-  }, FADE_TIME);
+    img.classList.add("fade-in");
+  }, 1000);
 }
 
-/* 初回起動 */
+/* 初回表示 */
 window.addEventListener("load", () => {
   const img = document.getElementById("randomImage");
   img.src = images[currentIndex];
+  img.classList.add("fade-in");
   setInterval(changeImage, INTERVAL);
 });
 </script>
