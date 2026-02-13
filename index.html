@@ -71,9 +71,15 @@ input{
   height:50vh;
   object-fit:contain;
 
-  opacity:0;
+  opacity:1;
   transition:opacity 1.0s ease;
 }
+
+.fade-out{
+  opacity:0;
+}
+
+
 </style>
 </head>
 
@@ -85,7 +91,7 @@ input{
 
   <button onclick="selectMode('city')">市で見る</button>
   <button onclick="selectMode('gun')">郡で見る</button>
-  <button onclick="selectMode('zip')">郵便番号で見る</button>
+  <button onclick="selectMode('zip')">全てから見る</button>
 
   <img id="randomImage" alt="random image">
 </div>
@@ -402,11 +408,7 @@ function selectMode(mode){
   searchInput.value = "";
   results.innerHTML = "";
 
-  if(mode === "zip"){
-    searchInput.placeholder = "郵便番号7桁";
-  }else{
-    searchInput.placeholder = "ひらがな・漢字で検索";
-  }
+searchInput.placeholder = "ひらがな・漢字で検索";
 
   searchInput.focus();
 }
@@ -484,24 +486,19 @@ function changeImage(){
   const img = document.getElementById("randomImage");
   if(!img) return;
 
-  img.style.opacity = 0;
+  img.classList.add("fade-out");
 
-  let next;
-  do{
-    next = Math.floor(Math.random() * images.length);
-  }while(next === currentIndex);
+  setTimeout(()=>{
+    let next;
+    do{
+      next = Math.floor(Math.random() * images.length);
+    }while(next === currentIndex);
 
-  currentIndex = next;
+    currentIndex = next;
 
-  img.onload = ()=>{
-    img.style.opacity = 1;
-  };
-  img.src = images[currentIndex];
-}
-
-function startSlideShow(){
-  changeImage();
-  setInterval(changeImage, 4000);
+    img.src = images[currentIndex];
+    img.classList.remove("fade-out");
+  }, 1000);
 }
 
 /* ===== 初回起動 ===== */
