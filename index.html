@@ -129,6 +129,18 @@ const images = [
 
 ];
 
+let currentIndex = 0;
+
+function setRandomImage(){
+  const img = document.getElementById("randomImage");
+  if(!img) return;
+
+  currentIndex = Math.floor(Math.random() * images.length);
+  img.src = images[currentIndex];
+}
+
+// ページ初回表示時
+window.addEventListener("load", setRandomImage);
 
 const data = [
 { type: "city", hiragana: "もんべつぐんたきのうえちょう", kanji: "紋別郡滝上町", code: "52-4※後部", note: "A棟接続　紋別" },
