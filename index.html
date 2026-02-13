@@ -90,7 +90,7 @@ margin-top:20px;
 <button onclick="selectMode('zip')">全てから見る</button>
 
 <div class="bottom-image">
-<img id="randomImage" src="" alt="bottom image">
+<img id="randomImage" alt="bottom image">
 </div>
 
 </div>
@@ -506,16 +506,20 @@ const images = [
   "1.png"
 ];
 
-function setRandomImage(){
-const img = document.getElementById("randomImage");
-if(!img) return;
+  const imgElement = document.getElementById("randomImage");
 
-const random = images[Math.floor(Math.random() * images.length)];
-img.src = random;
-}
-window.addEventListener("load", setRandomImage);
+  // 画像をランダムに切り替える関数
+  function changeImage() {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    imgElement.src = images[randomIndex];
+  }
 
+  // ページ読み込み時に初回表示
+  window.addEventListener("DOMContentLoaded", () => {
+    changeImage();
+    // 6秒ごとに画像切替
+    setInterval(changeImage, 6000);
+  });
 </script>
-
 </body>
 </html>
