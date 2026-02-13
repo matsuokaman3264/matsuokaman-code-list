@@ -90,7 +90,7 @@ input {
   <button onclick="selectMode('zip')">全てから見る</button>
 
 <div class="bottom-image">
-    <img src="esukon.png" alt="bottom image">
+    <img id="randomImage" alt="bottom image">
   </div>
 
 </div>
@@ -439,10 +439,11 @@ function selectMode(mode){
 }
 
 function goTop(){
-  searchArea.style.display = "none";
-  topDiv.style.display = "block";
+  document.getElementById("searchArea").style.display = "none";
+  document.getElementById("top").style.display = "block";
   currentMode = "";
-  gunSelect.style.display = "none";
+
+  setRandomImage();
 }
 
 function handleEnter(e){
@@ -489,6 +490,22 @@ function showResults(list){
     results.appendChild(div);
   });
 }
+
+const images = [
+  "esukon.png",
+  "sample1.gif",
+  "sample2.png"
+];
+
+function setRandomImage(){
+  const img = document.getElementById("randomImage");
+  if(!img) return;
+
+  const random = images[Math.floor(Math.random() * images.length)];
+  img.src = random;
+}
+  window.addEventListener("load", setRandomImage);
+
 </script>
 
 </body>
