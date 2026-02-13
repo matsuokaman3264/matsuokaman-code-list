@@ -2,67 +2,17 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>まつおかまん　店所コード検索</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-
-</script>
+<title>まつおかまん　店舗コード検索</title>
 
 <style>
 body{
-  font-family: sans-serif;
-  margin: 0;
-  padding: 20px;
-  text-align: center;
-  background:#f7f7f7;
+  margin:0;
+  font-family:sans-serif;
+  text-align:center;
 }
 
-button{
-  font-size:1.2em;
-  padding:10px 20px;
-  margin:10px;
-}
-
-#searchArea{
-  display:none;
-}
-
-input{
-  font-size:1.3em;
-  padding:10px;
-  width:90%;
-  max-width:400px;
-}
-
-.result{
-  margin:15px auto;
-  padding:10px;
-  border-bottom:1px solid #ccc;
-  max-width:500px;
-}
-
-.code{
-  font-size:2em;
-  font-weight:bold;
-}
-
-.sub{
-  font-size:0.9em;
-  color:#555;
-}
-
-.note{
-  font-size:0.9em;
-  color:#c00;
-}
-
-/* ===== 画像 ===== */
+/* ===== トップ画像 ===== */
 #randomImage{
   display:block;
   margin:20px auto 0;
@@ -79,70 +29,76 @@ input{
   opacity:0;
 }
 
+/* ===== 画面切替 ===== */
+#searchArea{
+  display:none;
+}
 
+button{
+  padding:10px 20px;
+  margin:10px;
+  font-size:16px;
+}
+
+input{
+  padding:10px;
+  font-size:16px;
+  width:80%;
+  max-width:300px;
+}
+
+/* ===== 検索結果 ===== */
+.result{
+  border-bottom:1px solid #ddd;
+  padding:10px;
+}
+
+.code{
+  font-size:24px;
+  font-weight:bold;
+}
+
+.sub{
+  color:#555;
+}
+
+.note{
+  font-size:12px;
+  color:#c00;
+}
 </style>
 </head>
 
 <body>
 
-<!-- ===== TOP ===== -->
+<!-- ===== トップ画面 ===== -->
 <div id="top">
   <h1>まつおかまん<br>店所コード検索</h1>
 
-  <button onclick="selectMode('city')">市で見る</button>
-  <button onclick="selectMode('gun')">郡で見る</button>
-  <button onclick="selectMode('zip')">全てから見る</button>
-
   <img id="randomImage" src="" alt="random image">
+
+  <div>
+    <button onclick="startSearch('city')">市で見る</button>
+    <button onclick="startSearch('gun')">郡で見る</button>
+    <button onclick="startSearch('zip')">全てから見る</button>
+  </div>
 </div>
 
-<!-- ===== SEARCH ===== -->
+<!-- ===== 検索画面 ===== -->
 <div id="searchArea">
-  <button onclick="goTop()">← トップへ戻る</button><br><br>
-
-  <input
-    id="searchInput"
-    placeholder="検索してください"
-    oninput="searchData()"
-    onkeydown="if(event.key==='Enter'){this.blur();}"
-  >
-
+  <div>
+    <input id="searchInput" placeholder="検索してください">
+  </div>
   <div id="results"></div>
+  <button onclick="goTop()">トップへ戻る</button>
 </div>
 
 <script>
-/* =========================
-   画像設定
-========================= */
-const images = [
-  "esukon.png",
-  "1.jpg",
-  "2.jpg",
-  "3.jpg",
-  "4.jpg",
-  "5.jpg",
-  "6.jpg",
-  "7.jpg",
-  "8.jpg",
-  "9.jpg",
-  "1.png"
-
-];
-
-let currentIndex = 0;
-
-function setRandomImage(){
-  const img = document.getElementById("randomImage");
-  if(!img) return;
-
-  currentIndex = Math.floor(Math.random() * images.length);
-  img.src = images[currentIndex];
-}
-
-// ページ初回表示時
-window.addEventListener("load", setRandomImage);
-
+/* ===============================
+   検索データ（ここを編集）
+================================ */
 const data = [
+
 { type: "city", hiragana: "もんべつぐんたきのうえちょう", kanji: "紋別郡滝上町", code: "52-4※後部", note: "A棟接続　紋別" },
 { type: "city", hiragana: "あさひかわし", kanji: "旭川市", code: "40-0", note: "A棟接続　旭川" },
 { type: "gun", hiragana: "あかんぐんあかんちょう", kanji: "阿寒郡阿寒町", code: "61-4", note: "A棟接続　釧路" },
@@ -397,14 +353,11 @@ const data = [
 { type: "city", hiragana: "ゆうばりし", kanji: "夕張市", code: "12-3", color: "blue" , note: "E棟　ローカル" },
 { type: "gun", hiragana: "れぶんぐんれぶんちょう", kanji: "礼文郡礼文町", code: "43-4※後部", note: "A棟接続　稚内" }
 
-
-
 ];
 
-
-/* =========================
-   画面制御
-========================= */
+/* ===============================
+   DOM取得
+================================ */
 const topDiv = document.getElementById("top");
 const searchArea = document.getElementById("searchArea");
 const searchInput = document.getElementById("searchInput");
@@ -412,64 +365,59 @@ const results = document.getElementById("results");
 
 let currentMode = "";
 
-/* ===== モード選択 ===== */
-function selectMode(mode){
+/* ===============================
+   画面遷移
+================================ */
+function startSearch(mode){
   currentMode = mode;
   topDiv.style.display = "none";
   searchArea.style.display = "block";
-  searchInput.value = "";
   results.innerHTML = "";
-
-searchInput.placeholder = "ひらがな・漢字で検索";
-
+  searchInput.value = "";
   searchInput.focus();
 }
 
-/* ===== トップへ戻る ===== */
 function goTop(){
   searchArea.style.display = "none";
   topDiv.style.display = "block";
   currentMode = "";
 }
 
-/* =========================
+/* ===============================
    検索処理
-========================= */
+================================ */
 function searchData(){
   let input = searchInput.value.trim();
   results.innerHTML = "";
 
   if(!input) return;
 
+
   const filtered = data.filter(d =>
     d.type === currentMode &&
     (
       (d.hiragana && d.hiragana.includes(input)) ||
       (d.kanji && d.kanji.includes(input)) ||
-      (d.zipcode && d.zipcode.includes(input))
+      (d.zipcode && d.zipcode === input)
     )
   );
 
   showResults(filtered);
-
-  gtag('event','search',{
-    search_term: input,
-    mode: currentMode,
-    results: filtered.length
-  });
 }
 
-/* ===== 結果表示 ===== */
+/* ===============================
+   結果表示
+================================ */
 function showResults(list){
-  list.forEach(d=>{
+  list.forEach(d => {
     const div = document.createElement("div");
-    div.className="result";
+    div.className = "result";
 
     const color = d.color ? d.color : "red";
 
     div.innerHTML = `
       <div class="code" style="color:${color};">${d.code}</div>
-      <div><strong>${d.kanji || ""}</strong></div>
+      <div><strong>${d.kanji}</strong></div>
       ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
       ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
     `;
@@ -477,45 +425,58 @@ function showResults(list){
   });
 }
 
-/* =========================
-   画像プリロード＋スライド
-========================= */
-function preloadImages(list, callback){
-  let loaded = 0;
-  list.forEach(src=>{
-    const img = new Image();
-    img.onload = img.onerror = ()=>{
-      loaded++;
-      if(loaded === list.length) callback();
-    };
-    img.src = src;
-  });
-}
+/* Enterキー検索 & スマホでキーボードを閉じる */
+searchInput.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    searchData();
+    searchInput.blur();
+  }
+});
 
-let currentIndex = -1;
+/* ===============================
+   画像設定（index.htmlと同階層）
+================================ */
+const images = [
+  "esukon.png",
+  "1.jpg",
+  "2.jpg",
+  "3.jpg",
+  "4.jpg",
+  "5.jpg",
+  "6.jpg",
+  "7.jpg",
+  "8.jpg",
+  "9.jpg",
+  "1.png"
+];
+
+/* 事前プリロード */
+images.forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
+
+/* スライド制御 */
+let currentIndex = Math.floor(Math.random() * images.length);
+const INTERVAL = 5000;
+const FADE_TIME = 1000;
 
 function changeImage(){
   const img = document.getElementById("randomImage");
-  if(!img) return;
-
   img.classList.add("fade-out");
 
-  setTimeout(()=>{
-    let next;
-    do{
-      next = Math.floor(Math.random() * images.length);
-    }while(next === currentIndex);
-
-    currentIndex = next;
-
+  setTimeout(() => {
+    currentIndex = (currentIndex + 1) % images.length;
     img.src = images[currentIndex];
     img.classList.remove("fade-out");
-  }, 1000);
+  }, FADE_TIME);
 }
 
-/* ===== 初回起動 ===== */
-window.addEventListener("load", ()=>{
-  preloadImages(images, startSlideShow);
+/* 初回起動 */
+window.addEventListener("load", () => {
+  const img = document.getElementById("randomImage");
+  img.src = images[currentIndex];
+  setInterval(changeImage, INTERVAL);
 });
 </script>
 
