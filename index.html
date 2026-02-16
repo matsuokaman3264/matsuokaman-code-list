@@ -29,6 +29,40 @@
   }
 }
 
+.color-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  margin: 6px;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1em;
+  user-select: none;
+}
+
+/* 赤 */
+.color-box.red {
+  border-color: red;
+  color: red;
+}
+
+/* 青 */
+.color-box.blue {
+  border-color: blue;
+  color: blue;
+}
+
+/* 選択中を強調 */
+.color-box input[type="radio"]:checked {
+  accent-color: currentColor;
+}
+
+.color-box:has(input[type="radio"]:checked) {
+  background: rgba(0,0,0,0.05);
+}
+
 
 body {
 font-family: sans-serif;
@@ -81,9 +115,23 @@ margin-top:20px;
 
 <body>
 
-<h1>まつおかまん　店所コード検索</h1>
+<h1>まつおかまん<br>店所コード検索</h1>
 
 <div id="top">
+
+<div style="margin:15px 0;">
+  <strong>地方で使用する色を選択</strong><br>
+
+  <label class="color-box red">
+    <input type="radio" name="resultColor" value="red" checked>
+    赤
+  </label>
+
+  <label class="color-box blue">
+    <input type="radio" name="resultColor" value="blue">
+    青
+  </label>
+</div>
 
 <button onclick="selectMode('city')">市で見る</button>
 <button onclick="selectMode('gun')">郡で見る</button>
@@ -115,211 +163,211 @@ margin-top:20px;
 <script>
 const data = [
 
-{ type: "city", hiragana: "もんべつぐんたきのうえちょう", kanji: "紋別郡滝上町", code: "52-4※後部", note: "A棟接続　紋別" },
-{ type: "city", hiragana: "あさひかわし", kanji: "旭川市", code: "40-0", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "あかんぐんあかんちょう", kanji: "阿寒郡阿寒町", code: "61-4", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "あかんぐんつるいむら", kanji: "阿寒郡鶴居村", code: "61-4", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "あしょろぐんあしょろちょう", kanji: "足寄郡足寄町", code: "60-5", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "あしょろぐんりくべつちょう", kanji: "足寄郡陸別町", code: "60-7", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "あっけしぐんあっけしちょう", kanji: "厚岸郡厚岸町", code: "61-1", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "あっけしぐんはまなかちょう", kanji: "厚岸郡浜中町", code: "61-1", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "あばしりぐんおおぞらちょう", kanji: "網走郡大空町", code: "51-1※後部", note: "A棟接続　網走" },
-{ type: "gun", hiragana: "あばしりぐんおおぞらちょうひがしもこと", kanji: "網走郡大空町東藻琴", code: "51-1※後部", note: "A棟接続　網走" },
-{ type: "city", hiragana: "ふかがわし", kanji: "深川市", code: "40-5", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "あばしりぐんおおぞらちょうめまんべつ", kanji: "網走郡大空町女満別", code: "51-1※後部", note: "A棟接続　網走" },
-{ type: "gun", hiragana: "あばしりぐんつべつちょう", kanji: "網走郡津別町", code: "50-1", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "あばしりぐんびほろちょう", kanji: "網走郡美幌町", code: "50-2", note: "A棟接続　北見" },
-{ type: "city", hiragana: "あばしりし", kanji: "網走市", code: "51-0※後部", note: "A棟接続　網走" },
-{ type: "gun", hiragana: "あぶたぐんあぶたちょう とうやこちょう", kanji: "虻田郡虻田町 洞爺湖町", code: "22-8", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんきもべつちょう", kanji: "虻田郡喜茂別町", code: "22-2", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんきょうごくちょう", kanji: "虻田郡京極町", code: "22-1", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんくっちゃんちょう", kanji: "虻田郡倶知安町", code: "22-0", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんくっちゃんちょうにせこひらふ", kanji: "虻田郡倶知安町ニセコ比羅夫", code: "22-4", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんとうやむら", kanji: "虻田郡洞爺村", code: "22-8", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんとようらちょう", kanji: "虻田郡豊浦町", code: "22-8", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "あぶたぐんまっかりむら", kanji: "虻田郡真狩村", code: "22-3", note: "A棟接続　倶知安" },
-{ type: "city", hiragana: "おたるし", kanji: "小樽市", code: "20-0", note: "A棟接続　小樽<br><span style='color: blue; font-weight: bold;'>銭函・星野・見晴・桂岡・張碓は10-0　ローカル！！" },
-{ type: "gun", hiragana: "あぶたぐんるすつむら", kanji: "虻田郡留寿都村", code: "22-3", note: "A棟接続　倶知安" },
+{ type: "city", hiragana: "もんべつぐんたきのうえちょう", kanji: "紋別郡滝上町", code: "52-4※後部", note: "地方接続　紋別" },
+{ type: "city", hiragana: "あさひかわし", kanji: "旭川市", code: "40-0", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "あかんぐんあかんちょう", kanji: "阿寒郡阿寒町", code: "61-4", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "あかんぐんつるいむら", kanji: "阿寒郡鶴居村", code: "61-4", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "あしょろぐんあしょろちょう", kanji: "足寄郡足寄町", code: "60-5", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "あしょろぐんりくべつちょう", kanji: "足寄郡陸別町", code: "60-7", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "あっけしぐんあっけしちょう", kanji: "厚岸郡厚岸町", code: "61-1", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "あっけしぐんはまなかちょう", kanji: "厚岸郡浜中町", code: "61-1", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "あばしりぐんおおぞらちょう", kanji: "網走郡大空町", code: "51-1※後部", note: "地方接続　網走" },
+{ type: "gun", hiragana: "あばしりぐんおおぞらちょうひがしもこと", kanji: "網走郡大空町東藻琴", code: "51-1※後部", note: "地方接続　網走" },
+{ type: "city", hiragana: "ふかがわし", kanji: "深川市", code: "40-5", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "あばしりぐんおおぞらちょうめまんべつ", kanji: "網走郡大空町女満別", code: "51-1※後部", note: "地方接続　網走" },
+{ type: "gun", hiragana: "あばしりぐんつべつちょう", kanji: "網走郡津別町", code: "50-1", note: "　北見" },
+{ type: "gun", hiragana: "あばしりぐんびほろちょう", kanji: "網走郡美幌町", code: "50-2", note: "地方接続　北見" },
+{ type: "city", hiragana: "あばしりし", kanji: "網走市", code: "51-0※後部", note: "地方接続　網走" },
+{ type: "gun", hiragana: "あぶたぐんあぶたちょう とうやこちょう", kanji: "虻田郡虻田町 洞爺湖町", code: "22-8", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんきもべつちょう", kanji: "虻田郡喜茂別町", code: "22-2", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんきょうごくちょう", kanji: "虻田郡京極町", code: "22-1", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんくっちゃんちょう", kanji: "虻田郡倶知安町", code: "22-0", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんくっちゃんちょうにせこひらふ", kanji: "虻田郡倶知安町ニセコ比羅夫", code: "22-4", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんとうやむら", kanji: "虻田郡洞爺村", code: "22-8", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんとようらちょう", kanji: "虻田郡豊浦町", code: "22-8", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "あぶたぐんまっかりむら", kanji: "虻田郡真狩村", code: "22-3", note: "地方接続　倶知安" },
+{ type: "city", hiragana: "おたるし", kanji: "小樽市", code: "20-0", note: "地方接続　小樽<br><span style='color: blue; font-weight: bold;'>銭函・星野・見晴・桂岡・張碓は10-0　ローカル！！" },
+{ type: "gun", hiragana: "あぶたぐんるすつむら", kanji: "虻田郡留寿都村", code: "22-3", note: "地方接続　倶知安" },
 { type: "gun", hiragana: "いしかりぐんしんしのつむら", kanji: "石狩郡新篠津村", code: "12-1", color: "blue" , note: "E棟　ローカル" },
 { type: "gun", hiragana: "いしかりぐんとうべつちょう", kanji: "石狩郡当別町", code: "12-1", color: "blue" , note: "E棟　ローカル" },
-{ type: "gun", hiragana: "いそやぐんらんこしちょう", kanji: "磯谷郡蘭越町", code: "22-4", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "いわないぐんいわないちょう", kanji: "岩内郡岩内町", code: "22-5", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "いわないぐんきょうわちょう", kanji: "岩内郡共和町", code: "22-6", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "うすぐんそうべつちょう", kanji: "有珠郡壮瞥町", code: "22-8", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "うらかわぐんうらかわちょう", kanji: "浦河郡浦河町", code: "39-3", note: "A棟接続　新ひだか" },
-{ type: "city", hiragana: "おびひろし", kanji: "帯広市", code: "60-0", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "うりゅうぐんうりゅうちょう", kanji: "雨竜郡雨竜町", code: "11-9", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "うりゅうぐんちっぷべつちょう", kanji: "雨竜郡秩父別町", code: "40-4", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "うりゅうぐんぬまたちょう", kanji: "雨竜郡沼田町", code: "40-4", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "うりゅうぐんほくりゅうちょう", kanji: "雨竜郡北竜町", code: "40-4", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "うりゅうぐんほろかないちょう", kanji: "雨竜郡幌加内町", code: "40-4", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "うりゅうぐんもせうしちょう", kanji: "雨竜郡妹背牛町", code: "40-4", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "えさしぐんえさしちょう", kanji: "枝幸郡枝幸町", code: "45-4※後部", note: "A棟接続　名寄<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょううたのぼり", kanji: "枝幸郡枝幸町歌登", code: "45-4※後部", note: "A棟接続　名寄<br><span style='color: red; font-weight: bold;'>歌登上徳志別は52-5！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうおつちゅうべ", kanji: "枝幸郡枝幸町乙忠部", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうおとしべ", kanji: "枝幸郡枝幸町音標", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうかみおとしべ", kanji: "枝幸郡枝幸町上音標", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうかみとくしべつ", kanji: "枝幸郡枝幸町上徳志別", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうとくしべつ", kanji: "枝幸郡枝幸町徳志別", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうふうれっぷ", kanji: "枝幸郡枝幸町風烈布", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんえさしちょうやまうす", kanji: "枝幸郡枝幸町山臼", code: "52-5※後部", note: "A棟接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
-{ type: "gun", hiragana: "えさしぐんなかとんべつちょう", kanji: "枝幸郡中頓別町", code: "45-4※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "えさしぐんはまとんべつちょう", kanji: "枝幸郡浜頓別町", code: "45-4※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "おくしりぐんおくしりちょう", kanji: "奥尻郡奥尻町", code: "21-6", note: "A棟接続　函館" },
-{ type: "city", hiragana: "きたみし", kanji: "北見市", code: "50-0", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "かさいぐんさらべつむら", kanji: "加西郡更別村", code: "60-9", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かさいぐんなかさつないむら", kanji: "加西郡中札内村", code: "60-9", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かさいぐんめむろちょう", kanji: "加西郡芽室町", code: "60-1", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かとうぐんおとふけちょう", kanji: "河東郡音更町", code: "60-2", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かとうぐんかみしほろちょう", kanji: "河東郡上士幌町", code: "60-5", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かとうぐんしかおいちょう", kanji: "河東郡鹿追町", code: "60-6", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かとうぐんしほろちょう", kanji: "河東郡士幌町", code: "60-5", note: "A棟接続　帯広" },
-{ type: "city", hiragana: "きたみしるべしべちょう", kanji: "北見市留辺蘂町", code: "50-4", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "かばとぐんうらうすちょう", kanji: "樺戸郡浦臼町", code: "11-7", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "かばとぐんしんとつかわちょう", kanji: "樺戸郡新十津川町", code: "11-7", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "かばとぐんつきがたちょう", kanji: "樺戸郡月形町", code: "11-6", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "かみいそぐんきこないちょう", kanji: "上磯郡木古内町", code: "21-2", note: "A棟接続　函館" },
-{ type: "city", hiragana: "くしろし", kanji: "釧路市", code: "61-0", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "かみいそぐんしりうちちょう", kanji: "上磯郡知内町", code: "21-5", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "かみかわぐんあいべつちょう", kanji: "上川郡愛別町", code: "40-2", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんかみかわちょう", kanji: "上川郡上川町", code: "40-2", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんけんぶちちょう", kanji: "上川郡剣淵町", code: "45-3※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "かみかわぐんしもかわちょう", kanji: "上川郡下川町", code: "45-2※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "かみかわぐんしんとくちょう", kanji: "上川郡新得町", code: "60-6", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かみかわぐんたかすちょう", kanji: "上川郡鷹栖町", code: "40-1", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんとうまちょう", kanji: "上川郡当麻町", code: "40-2", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんびえいちょう", kanji: "上川郡美瑛町", code: "47-1", note: "A棟接続　富良野" },
-{ type: "gun", hiragana: "かみかわぐんひがしかぐらちょう", kanji: "上川郡東神楽町", code: "40-3", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんひがしかわちょう", kanji: "上川郡東川町", code: "40-3", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんぴっぷちょう", kanji: "上川郡比布町", code: "40-2", note: "A棟接続　旭川" },
-{ type: "gun", hiragana: "かみかわぐんわっさむちょう", kanji: "上川郡和寒町", code: "45-3※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "かめだぐんななえちょう", kanji: "亀田郡七飯町", code: "21-3", note: "A棟接続　函館" },
-{ type: "city", hiragana: "だてしおおたきく", kanji: "伊達市大滝区", code: "22-8", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "かやべぐんしかべちょう", kanji: "茅部郡鹿部町", code: "21-1", note: "A棟接続　函館" },
+{ type: "gun", hiragana: "いそやぐんらんこしちょう", kanji: "磯谷郡蘭越町", code: "22-4", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "いわないぐんいわないちょう", kanji: "岩内郡岩内町", code: "22-5", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "いわないぐんきょうわちょう", kanji: "岩内郡共和町", code: "22-6", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "うすぐんそうべつちょう", kanji: "有珠郡壮瞥町", code: "22-8", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "うらかわぐんうらかわちょう", kanji: "浦河郡浦河町", code: "39-3", note: "地方接続　新ひだか" },
+{ type: "city", hiragana: "おびひろし", kanji: "帯広市", code: "60-0", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "うりゅうぐんうりゅうちょう", kanji: "雨竜郡雨竜町", code: "11-9", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "うりゅうぐんちっぷべつちょう", kanji: "雨竜郡秩父別町", code: "40-4", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "うりゅうぐんぬまたちょう", kanji: "雨竜郡沼田町", code: "40-4", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "うりゅうぐんほくりゅうちょう", kanji: "雨竜郡北竜町", code: "40-4", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "うりゅうぐんほろかないちょう", kanji: "雨竜郡幌加内町", code: "40-4", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "うりゅうぐんもせうしちょう", kanji: "雨竜郡妹背牛町", code: "40-4", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "えさしぐんえさしちょう", kanji: "枝幸郡枝幸町", code: "45-4※後部", note: "地方接続　名寄<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょううたのぼり", kanji: "枝幸郡枝幸町歌登", code: "45-4※後部", note: "地方接続　名寄<br><span style='color: red; font-weight: bold;'>歌登上徳志別は52-5！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうおつちゅうべ", kanji: "枝幸郡枝幸町乙忠部", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうおとしべ", kanji: "枝幸郡枝幸町音標", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうかみおとしべ", kanji: "枝幸郡枝幸町上音標", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうかみとくしべつ", kanji: "枝幸郡枝幸町上徳志別", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうとくしべつ", kanji: "枝幸郡枝幸町徳志別", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうふうれっぷ", kanji: "枝幸郡枝幸町風烈布", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんえさしちょうやまうす", kanji: "枝幸郡枝幸町山臼", code: "52-5※後部", note: "地方接続　紋別<br><span style='color: red; font-weight: bold;'>江差町は45-4じゃない！！枝幸町のあとの住所でコードが変わる！！" },
+{ type: "gun", hiragana: "えさしぐんなかとんべつちょう", kanji: "枝幸郡中頓別町", code: "45-4※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "えさしぐんはまとんべつちょう", kanji: "枝幸郡浜頓別町", code: "45-4※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "おくしりぐんおくしりちょう", kanji: "奥尻郡奥尻町", code: "21-6", note: "地方接続　函館" },
+{ type: "city", hiragana: "きたみし", kanji: "北見市", code: "50-0", note: "地方接続　北見" },
+{ type: "gun", hiragana: "かさいぐんさらべつむら", kanji: "加西郡更別村", code: "60-9", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かさいぐんなかさつないむら", kanji: "加西郡中札内村", code: "60-9", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かさいぐんめむろちょう", kanji: "加西郡芽室町", code: "60-1", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かとうぐんおとふけちょう", kanji: "河東郡音更町", code: "60-2", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かとうぐんかみしほろちょう", kanji: "河東郡上士幌町", code: "60-5", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かとうぐんしかおいちょう", kanji: "河東郡鹿追町", code: "60-6", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かとうぐんしほろちょう", kanji: "河東郡士幌町", code: "60-5", note: "地方接続　帯広" },
+{ type: "city", hiragana: "きたみしるべしべちょう", kanji: "北見市留辺蘂町", code: "50-4", note: "地方接続　北見" },
+{ type: "gun", hiragana: "かばとぐんうらうすちょう", kanji: "樺戸郡浦臼町", code: "11-7", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "かばとぐんしんとつかわちょう", kanji: "樺戸郡新十津川町", code: "11-7", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "かばとぐんつきがたちょう", kanji: "樺戸郡月形町", code: "11-6", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "かみいそぐんきこないちょう", kanji: "上磯郡木古内町", code: "21-2", note: "地方接続　函館" },
+{ type: "city", hiragana: "くしろし", kanji: "釧路市", code: "61-0", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "かみいそぐんしりうちちょう", kanji: "上磯郡知内町", code: "21-5", note: "地方接続　函館" },
+{ type: "gun", hiragana: "かみかわぐんあいべつちょう", kanji: "上川郡愛別町", code: "40-2", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんかみかわちょう", kanji: "上川郡上川町", code: "40-2", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんけんぶちちょう", kanji: "上川郡剣淵町", code: "45-3※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "かみかわぐんしもかわちょう", kanji: "上川郡下川町", code: "45-2※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "かみかわぐんしんとくちょう", kanji: "上川郡新得町", code: "60-6", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かみかわぐんたかすちょう", kanji: "上川郡鷹栖町", code: "40-1", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんとうまちょう", kanji: "上川郡当麻町", code: "40-2", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんびえいちょう", kanji: "上川郡美瑛町", code: "47-1", note: "地方接続　富良野" },
+{ type: "gun", hiragana: "かみかわぐんひがしかぐらちょう", kanji: "上川郡東神楽町", code: "40-3", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんひがしかわちょう", kanji: "上川郡東川町", code: "40-3", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんぴっぷちょう", kanji: "上川郡比布町", code: "40-2", note: "地方接続　旭川" },
+{ type: "gun", hiragana: "かみかわぐんわっさむちょう", kanji: "上川郡和寒町", code: "45-3※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "かめだぐんななえちょう", kanji: "亀田郡七飯町", code: "21-3", note: "地方接続　函館" },
+{ type: "city", hiragana: "だてしおおたきく", kanji: "伊達市大滝区", code: "22-8", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "かやべぐんしかべちょう", kanji: "茅部郡鹿部町", code: "21-1", note: "地方接続　函館" },
 { type: "gun", hiragana: "", kanji: "", code: "", note: "　" },
-{ type: "gun", hiragana: "かやべぐんもりまち", kanji: "茅部郡森町", code: "29-2", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "かやべぐんもりまちさわら", kanji: "茅部郡森町砂原", code: "29-3", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "かわかみぐんしべちゃちょう", kanji: "川上郡標茶町", code: "61-3", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "かわかみぐんしみずちょう", kanji: "川上郡清水町", code: "60-6", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "かわかみぐんてしかがちょう", kanji: "川上郡弟子屈町", code: "61-3", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "くしろぐんくしろちょう", kanji: "釧路郡釧路町", code: "61-0", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "さまにぐんさまにちょう", kanji: "様似郡様似町", code: "39-4", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "さるぐんひだかちょう", kanji: "沙流郡日高町", code: "39-2", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "さるぐんひだかちょうとみかわ", kanji: "沙流郡日高町富川", code: "39-2", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "さるぐんひだかちょうもんべつ", kanji: "沙流郡日高町門別", code: "39-2", note: "A棟接続　新ひだか<br><span style='color: red; font-weight: bold;'>紋別は52-0！！" },
-{ type: "gun", hiragana: "さるぐんびらとりちょう", kanji: "沙流郡平取町", code: "39-2", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "しずないぐんしずないちょう", kanji: "静内郡静内町", code: "39-0", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "しべつぐんしべつちょう", kanji: "標津郡標津町", code: "64-2※後部", note: "A棟接続　中標津" },
-{ type: "gun", hiragana: "しべつぐんなかしべつちょう", kanji: "標津郡中標津町", code: "64-0※後部", note: "A棟接続　中標津" },
-{ type: "gun", hiragana: "しままきぐんしままきむら", kanji: "島牧郡島牧村", code: "29-5", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "しゃこたんぐんしゃこたんちょう", kanji: "積丹郡積丹町", code: "20-1", note: "A棟接続　小樽" },
-{ type: "gun", hiragana: "しゃりぐんきよさとちょう", kanji: "斜里郡清里町", code: "51-2※後部", note: "A棟接続　網走" },
-{ type: "gun", hiragana: "しゃりぐんこしみずちょう", kanji: "斜里郡小清水町", code: "51-2※後部", note: "A棟接続　網走" },
-{ type: "gun", hiragana: "しゃりぐんしゃりちょう", kanji: "斜里郡斜里町", code: "51-2※後部", note: "A棟接続　網走" },
-{ type: "city", hiragana: "ほくとしおいわけ", kanji: "北斗市追分", code: "31-4", note: "A棟接続　苫小牧" },
-{ type: "gun", hiragana: "しゃりぐんしゃりちょううとろ", kanji: "斜里郡斜里町ウトロ", code: "51-2※後部", note: "A棟接続　網走" },
-{ type: "city", hiragana: "とまこまいし", kanji: "苫小牧市", code: "31-0", note: "A棟接続　苫小牧" },
-{ type: "gun", hiragana: "しらおいぐんしらおいちょう", kanji: "白老郡白老町", code: "31-2", note: "A棟接続　苫小牧" },
+{ type: "gun", hiragana: "かやべぐんもりまち", kanji: "茅部郡森町", code: "29-2", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "かやべぐんもりまちさわら", kanji: "茅部郡森町砂原", code: "29-3", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "かわかみぐんしべちゃちょう", kanji: "川上郡標茶町", code: "61-3", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "かわかみぐんしみずちょう", kanji: "川上郡清水町", code: "60-6", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "かわかみぐんてしかがちょう", kanji: "川上郡弟子屈町", code: "61-3", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "くしろぐんくしろちょう", kanji: "釧路郡釧路町", code: "61-0", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "さまにぐんさまにちょう", kanji: "様似郡様似町", code: "39-4", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "さるぐんひだかちょう", kanji: "沙流郡日高町", code: "39-2", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "さるぐんひだかちょうとみかわ", kanji: "沙流郡日高町富川", code: "39-2", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "さるぐんひだかちょうもんべつ", kanji: "沙流郡日高町門別", code: "39-2", note: "地方接続　新ひだか<br><span style='color: red; font-weight: bold;'>紋別は52-0！！" },
+{ type: "gun", hiragana: "さるぐんびらとりちょう", kanji: "沙流郡平取町", code: "39-2", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "しずないぐんしずないちょう", kanji: "静内郡静内町", code: "39-0", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "しべつぐんしべつちょう", kanji: "標津郡標津町", code: "64-2※後部", note: "地方接続　中標津" },
+{ type: "gun", hiragana: "しべつぐんなかしべつちょう", kanji: "標津郡中標津町", code: "64-0※後部", note: "地方接続　中標津" },
+{ type: "gun", hiragana: "しままきぐんしままきむら", kanji: "島牧郡島牧村", code: "29-5", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "しゃこたんぐんしゃこたんちょう", kanji: "積丹郡積丹町", code: "20-1", note: "地方接続　小樽" },
+{ type: "gun", hiragana: "しゃりぐんきよさとちょう", kanji: "斜里郡清里町", code: "51-2※後部", note: "地方接続　網走" },
+{ type: "gun", hiragana: "しゃりぐんこしみずちょう", kanji: "斜里郡小清水町", code: "51-2※後部", note: "地方接続　網走" },
+{ type: "gun", hiragana: "しゃりぐんしゃりちょう", kanji: "斜里郡斜里町", code: "51-2※後部", note: "地方接続　網走" },
+{ type: "city", hiragana: "ほくとしおいわけ", kanji: "北斗市追分", code: "31-4", note: "地方接続　苫小牧" },
+{ type: "gun", hiragana: "しゃりぐんしゃりちょううとろ", kanji: "斜里郡斜里町ウトロ", code: "51-2※後部", note: "地方接続　網走" },
+{ type: "city", hiragana: "とまこまいし", kanji: "苫小牧市", code: "31-0", note: "地方接続　苫小牧" },
+{ type: "gun", hiragana: "しらおいぐんしらおいちょう", kanji: "白老郡白老町", code: "31-2", note: "地方接続　苫小牧" },
 { type: "gun", hiragana: "", kanji: "", code: "", note: "　" },
-{ type: "gun", hiragana: "しらぬかぐんおんべつちょう", kanji: "白糠郡音別町", code: "61-2", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "しらぬかぐんしらぬかちょう", kanji: "白糠郡白糠町", code: "61-2", note: "A棟接続　釧路" },
-{ type: "gun", hiragana: "すっつぐんくろまつないちょう", kanji: "寿都郡黒松内町", code: "29-4", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "すっつぐんすっつちょう", kanji: "寿都郡寿都町", code: "29-5", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "せたなぐんいまかねちょう", kanji: "瀬棚郡今金町", code: "29-6", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "しべつしあさひちょう", kanji: "士別市朝日町", code: "45-3※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "せたなぐんきたひやまちょう", kanji: "瀬棚郡北檜山町", code: "29-6", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "せたなぐんせたなちょう", kanji: "瀬棚郡瀬棚町", code: "29-6", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "そらちぐんかみすながわちょう", kanji: "空知郡上砂川町", code: "11-8", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "そらちぐんかみふらのちょう", kanji: "空知郡上富良野町", code: "47-2", note: "A棟接続　富良野" },
-{ type: "city", hiragana: "しべつし", kanji: "士別市", code: "45-3※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "そらちぐんないえちょう", kanji: "空知郡奈井江町", code: "11-3", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "そらちぐんなかふらのちょう", kanji: "空知郡中富良野町", code: "47-3", note: "A棟接続　富良野" },
-{ type: "city", hiragana: "なよろし", kanji: "名寄市", code: "45-0※後部", note: "A棟接続　名寄" },
-{ type: "city", hiragana: "なよろしふうれんちょう", kanji: "名寄市風連町", code: "45-5※後部", note: "A棟接続　名寄" },
+{ type: "gun", hiragana: "しらぬかぐんおんべつちょう", kanji: "白糠郡音別町", code: "61-2", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "しらぬかぐんしらぬかちょう", kanji: "白糠郡白糠町", code: "61-2", note: "地方接続　釧路" },
+{ type: "gun", hiragana: "すっつぐんくろまつないちょう", kanji: "寿都郡黒松内町", code: "29-4", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "すっつぐんすっつちょう", kanji: "寿都郡寿都町", code: "29-5", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "せたなぐんいまかねちょう", kanji: "瀬棚郡今金町", code: "29-6", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "しべつしあさひちょう", kanji: "士別市朝日町", code: "45-3※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "せたなぐんきたひやまちょう", kanji: "瀬棚郡北檜山町", code: "29-6", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "せたなぐんせたなちょう", kanji: "瀬棚郡瀬棚町", code: "29-6", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "そらちぐんかみすながわちょう", kanji: "空知郡上砂川町", code: "11-8", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "そらちぐんかみふらのちょう", kanji: "空知郡上富良野町", code: "47-2", note: "地方接続　富良野" },
+{ type: "city", hiragana: "しべつし", kanji: "士別市", code: "45-3※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "そらちぐんないえちょう", kanji: "空知郡奈井江町", code: "11-3", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "そらちぐんなかふらのちょう", kanji: "空知郡中富良野町", code: "47-3", note: "地方接続　富良野" },
+{ type: "city", hiragana: "なよろし", kanji: "名寄市", code: "45-0※後部", note: "地方接続　名寄" },
+{ type: "city", hiragana: "なよろしふうれんちょう", kanji: "名寄市風連町", code: "45-5※後部", note: "地方接続　名寄" },
 { type: "gun", hiragana: "そらちぐんなんぽろちょう", kanji: "空知郡南幌町", code: "12-2", color: "blue" , note: "E棟　ローカル" },
-{ type: "gun", hiragana: "そらちぐんみなみふらのちょう", kanji: "空知郡南富良野町", code: "47-4", note: "A棟接続　富良野" },
-{ type: "gun", hiragana: "てしおぐんえんべつちょう", kanji: "天塩郡遠別町", code: "43-3※後部", note: "A棟接続　稚内" },
-{ type: "city", hiragana: "ねむろし", kanji: "根室市", code: "62-0※後部", note: "A棟接続　根室" },
-{ type: "gun", hiragana: "てしおぐんてしおちょう", kanji: "天塩郡天塩町", code: "43-3※後部", note: "A棟接続　稚内" },
-{ type: "gun", hiragana: "てしおぐんとよとみちょう", kanji: "天塩郡豊富町", code: "43-2※後部", note: "A棟接続　稚内" },
-{ type: "gun", hiragana: "てしおぐんほろのべちょう", kanji: "天塩郡幌延町", code: "43-2※後部", note: "A棟接続　稚内" },
-{ type: "gun", hiragana: "とかちぐんうらほろちょう", kanji: "十勝郡浦幌町", code: "60-4", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "ところぐんおけとちょう", kanji: "常呂郡置戸町", code: "50-4", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "ところぐんくんねっぷちょう", kanji: "常呂郡訓子府町", code: "50-4", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "ところぐんさろまちょう", kanji: "常呂郡佐呂間町", code: "50-3", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "ところぐんところちょう", kanji: "常呂郡常呂町", code: "50-3", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "とままえぐんしょさんべつむら", kanji: "苫前郡初山別村", code: "41-2※後部", note: "A棟接続　留萌" },
-{ type: "city", hiragana: "はこだてし", kanji: "函館市", code: "21-0", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "とままえぐんとままえちょう", kanji: "苫前郡苫前町", code: "41-2※後部", note: "A棟接続　留萌" },
-{ type: "city", hiragana: "ほくとし", kanji: "北斗市", code: "21-2", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "とままえぐんはぼろちょう", kanji: "苫前郡羽幌町", code: "41-2※後部", note: "A棟接続　留萌" },
-{ type: "city", hiragana: "うたしないし", kanji: "歌志内市", code: "11-8", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "とままえぐんはぼろちょうてうり", kanji: "苫前郡羽幌町天売", code: "41-3※後部", note: "A棟接続　留萌" },
-{ type: "gun", hiragana: "とままえぐんはぼろちょうやぎしり", kanji: "苫前郡羽幌町焼尻", code: "41-3※後部", note: "A棟接続　留萌" },
-{ type: "gun", hiragana: "なかがわぐんいけだちょう", kanji: "中川郡池田町", code: "60-8", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "なかがわぐんおといねっぷむら", kanji: "中川郡音威子府村", code: "45-4※後部", note: "A棟接続　名寄" },
-{ type: "city", hiragana: "すながわし", kanji: "砂川市", code: "11-2", note: "A棟接続　美唄" },
-{ type: "city", hiragana: "たきかわし", kanji: "滝川市", code: "11-1", note: "A棟接続　美唄" },
-{ type: "gun", hiragana: "なかがわぐんとよころちょう", kanji: "中川郡豊頃町", code: "60-4", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "なかがわぐんなかがわちょう", kanji: "中川郡中川町", code: "43-2※後部", note: "A棟接続　稚内" },
-{ type: "city", hiragana: "びばいし", kanji: "美唄市", code: "11-0", note: "A棟接続　美唄" },
-{ type: "city", hiragana: "みかさし", kanji: "三笠市", code: "11-4", note: "A棟接続　美唄" },
-{ type: "city", hiragana: "あかびらし", kanji: "赤平市", code: "47-6", note: "A棟接続　富良野" },
-{ type: "city", hiragana: "あしべつし", kanji: "芦別市", code: "47-5", note: "A棟接続　富良野" },
-{ type: "gun", hiragana: "なかがわぐんびふかちょう", kanji: "中川郡美深町", code: "45-1※後部", note: "A棟接続　名寄" },
-{ type: "gun", hiragana: "なかがわぐんほんべつちょう", kanji: "中川郡本別町", code: "60-8", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "なかがわぐんまくべつちょう", kanji: "中川郡幕別町", code: "60-4", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "なかがわぐんまくべつちょうさつない", kanji: "中川郡幕別町札内", code: "60-3", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "なかがわぐんまくべつちょうちゅうるい", kanji: "中川郡幕別町忠類", code: "60-9", note: "A棟接続　帯広" },
-{ type: "city", hiragana: "ふらのし", kanji: "富良野市", code: "47-0", note: "A棟接続　富良野" },
-{ type: "gun", hiragana: "にいかっぷぐんにいかっぷちょう", kanji: "新冠郡新冠町", code: "39-1", note: "A棟接続　新ひだか" },
-{ type: "city", hiragana: "だてし", kanji: "伊達市", code: "30-2", note: "A棟接続　室蘭" },
-{ type: "city", hiragana: "のぼりべつし", kanji: "登別市", code: "30-1", note: "A棟接続　室蘭" },
-{ type: "city", hiragana: "むろらんし", kanji: "室蘭市", code: "30-0", note: "A棟接続　室蘭" },
-{ type: "gun", hiragana: "にしぐんおとべちょう", kanji: "爾志郡乙部町", code: "21-4", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "にしぐんくまいしちょう", kanji: "爾志郡熊石町", code: "29-7", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "のつけぐんべっかいちょう", kanji: "野付郡別海町", code: "64-1※後部", note: "A棟接続　中標津" },
-{ type: "gun", hiragana: "ひだかぐんしんひだかちょう", kanji: "日高郡新ひだか町", code: "39-0", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "ひだかぐんしんひだかちょうみついし", kanji: "日高郡新ひだか町三石", code: "39-0", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "ひやまぐんあっさぶちょう", kanji: "檜山郡厚沢部町", code: "21-4", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "ひやまぐんえさしちょう", kanji: "檜山郡江差町", code: "21-4", note: "A棟接続　函館<br><span style='color: red; font-weight: bold;'>枝幸町は21-4じゃない！！" },
-{ type: "gun", hiragana: "ひやまぐんかみのくにちょう", kanji: "檜山郡上ノ国町", code: "21-4", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "ひろおぐんたいきちょう", kanji: "広尾郡大樹町", code: "60-9", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "ひろおぐんひろおちょう", kanji: "広尾郡広尾町", code: "60-9", note: "A棟接続　帯広" },
-{ type: "gun", hiragana: "ふたみぐんやくもちょう", kanji: "二海郡八雲町", code: "29-0", note: "A棟接続　八雲" },
-{ type: "gun", hiragana: "ふたみぐんやくもちょうおとしべ", kanji: "二海郡八雲町落部", code: "29-1", note: "A棟接続　八雲" },
-{ type: "city", hiragana: "もんべつし", kanji: "紋別市", code: "52-0※後部", note: "A棟接続　紋別" },
-{ type: "gun", hiragana: "ふるうぐんかもえないむら", kanji: "古宇郡神恵内村", code: "22-7", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "ふるうぐんとまりむら", kanji: "古宇郡泊村", code: "22-7", note: "A棟接続　倶知安" },
-{ type: "gun", hiragana: "ふるびらぐんふるびらちょう", kanji: "古平郡古平町", code: "20-1", note: "A棟接続　小樽" },
-{ type: "gun", hiragana: "ほろいずみぐんえりもちょう", kanji: "幌泉郡えりも町", code: "39-4", note: "A棟接続　新ひだか" },
-{ type: "gun", hiragana: "ましけぐんましけちょう", kanji: "増毛郡増毛町", code: "41-1※後部", note: "A棟接続　留萌" },
-{ type: "gun", hiragana: "まつまえぐんふくしまちょう", kanji: "松前郡福島町", code: "21-5", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "まつまえぐんまつまえちょう", kanji: "松前郡松前町", code: "21-5", note: "A棟接続　函館" },
-{ type: "gun", hiragana: "めなしぐんらうすちょう", kanji: "目梨郡羅臼町", code: "64-3※後部", note: "A棟接続　中標津" },
-{ type: "gun", hiragana: "もんべつぐんえんがるちょう いくたはら", kanji: "紋別郡遠軽町 生田原", code: "50-5", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "もんべつぐんえんがるちょう", kanji: "紋別郡遠軽町", code: "50-5", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "もんべつぐんえんがるちょうしらたき", kanji: "紋別郡遠軽町白滝", code: "50-5", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "もんべつぐんえんがるちょうまるせっぷ", kanji: "紋別郡遠軽町丸瀬布", code: "50-5", note: "A棟接続　北見" },
-{ type: "gun", hiragana: "もんべつぐんおうむちょう", kanji: "紋別郡雄武町", code: "52-3※後部", note: "A棟接続　紋別" },
-{ type: "gun", hiragana: "もんべつぐんおこっぺちょう", kanji: "紋別郡興部町", code: "52-3※後部", note: "A棟接続　紋別" },
-{ type: "gun", hiragana: "もんべつぐんかみゆうべつちょう", kanji: "紋別郡上湧別町", code: "52-2※後部", note: "A棟接続　紋別" },
-{ type: "gun", hiragana: "もんべつぐんにしおこっぺむら", kanji: "紋別郡西興部村", code: "52-3※後部", note: "A棟接続　紋別" },
-{ type: "gun", hiragana: "もんべつぐんゆうべつちょう", kanji: "紋別郡湧別町", code: "52-2※後部", note: "A棟接続　紋別" },
-{ type: "gun", hiragana: "やまこしぐんおしゃまんべちょう", kanji: "山越郡長万部町", code: "29-4", note: "A棟接続　八雲" },
+{ type: "gun", hiragana: "そらちぐんみなみふらのちょう", kanji: "空知郡南富良野町", code: "47-4", note: "地方接続　富良野" },
+{ type: "gun", hiragana: "てしおぐんえんべつちょう", kanji: "天塩郡遠別町", code: "43-3※後部", note: "地方接続　稚内" },
+{ type: "city", hiragana: "ねむろし", kanji: "根室市", code: "62-0※後部", note: "地方接続　根室" },
+{ type: "gun", hiragana: "てしおぐんてしおちょう", kanji: "天塩郡天塩町", code: "43-3※後部", note: "地方接続　稚内" },
+{ type: "gun", hiragana: "てしおぐんとよとみちょう", kanji: "天塩郡豊富町", code: "43-2※後部", note: "地方接続　稚内" },
+{ type: "gun", hiragana: "てしおぐんほろのべちょう", kanji: "天塩郡幌延町", code: "43-2※後部", note: "地方接続　稚内" },
+{ type: "gun", hiragana: "とかちぐんうらほろちょう", kanji: "十勝郡浦幌町", code: "60-4", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "ところぐんおけとちょう", kanji: "常呂郡置戸町", code: "50-4", note: "地方接続　北見" },
+{ type: "gun", hiragana: "ところぐんくんねっぷちょう", kanji: "常呂郡訓子府町", code: "50-4", note: "地方接続　北見" },
+{ type: "gun", hiragana: "ところぐんさろまちょう", kanji: "常呂郡佐呂間町", code: "50-3", note: "地方接続　北見" },
+{ type: "gun", hiragana: "ところぐんところちょう", kanji: "常呂郡常呂町", code: "50-3", note: "地方接続　北見" },
+{ type: "gun", hiragana: "とままえぐんしょさんべつむら", kanji: "苫前郡初山別村", code: "41-2※後部", note: "地方接続　留萌" },
+{ type: "city", hiragana: "はこだてし", kanji: "函館市", code: "21-0", note: "地方接続　函館" },
+{ type: "gun", hiragana: "とままえぐんとままえちょう", kanji: "苫前郡苫前町", code: "41-2※後部", note: "地方接続　留萌" },
+{ type: "city", hiragana: "ほくとし", kanji: "北斗市", code: "21-2", note: "地方接続　函館" },
+{ type: "gun", hiragana: "とままえぐんはぼろちょう", kanji: "苫前郡羽幌町", code: "41-2※後部", note: "地方接続　留萌" },
+{ type: "city", hiragana: "うたしないし", kanji: "歌志内市", code: "11-8", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "とままえぐんはぼろちょうてうり", kanji: "苫前郡羽幌町天売", code: "41-3※後部", note: "地方接続　留萌" },
+{ type: "gun", hiragana: "とままえぐんはぼろちょうやぎしり", kanji: "苫前郡羽幌町焼尻", code: "41-3※後部", note: "地方接続　留萌" },
+{ type: "gun", hiragana: "なかがわぐんいけだちょう", kanji: "中川郡池田町", code: "60-8", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "なかがわぐんおといねっぷむら", kanji: "中川郡音威子府村", code: "45-4※後部", note: "地方接続　名寄" },
+{ type: "city", hiragana: "すながわし", kanji: "砂川市", code: "11-2", note: "地方接続　美唄" },
+{ type: "city", hiragana: "たきかわし", kanji: "滝川市", code: "11-1", note: "地方接続　美唄" },
+{ type: "gun", hiragana: "なかがわぐんとよころちょう", kanji: "中川郡豊頃町", code: "60-4", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "なかがわぐんなかがわちょう", kanji: "中川郡中川町", code: "43-2※後部", note: "地方接続　稚内" },
+{ type: "city", hiragana: "びばいし", kanji: "美唄市", code: "11-0", note: "地方接続　美唄" },
+{ type: "city", hiragana: "みかさし", kanji: "三笠市", code: "11-4", note: "地方接続　美唄" },
+{ type: "city", hiragana: "あかびらし", kanji: "赤平市", code: "47-6", note: "地方接続　富良野" },
+{ type: "city", hiragana: "あしべつし", kanji: "芦別市", code: "47-5", note: "地方接続　富良野" },
+{ type: "gun", hiragana: "なかがわぐんびふかちょう", kanji: "中川郡美深町", code: "45-1※後部", note: "地方接続　名寄" },
+{ type: "gun", hiragana: "なかがわぐんほんべつちょう", kanji: "中川郡本別町", code: "60-8", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "なかがわぐんまくべつちょう", kanji: "中川郡幕別町", code: "60-4", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "なかがわぐんまくべつちょうさつない", kanji: "中川郡幕別町札内", code: "60-3", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "なかがわぐんまくべつちょうちゅうるい", kanji: "中川郡幕別町忠類", code: "60-9", note: "地方接続　帯広" },
+{ type: "city", hiragana: "ふらのし", kanji: "富良野市", code: "47-0", note: "地方接続　富良野" },
+{ type: "gun", hiragana: "にいかっぷぐんにいかっぷちょう", kanji: "新冠郡新冠町", code: "39-1", note: "地方接続　新ひだか" },
+{ type: "city", hiragana: "だてし", kanji: "伊達市", code: "30-2", note: "地方接続　室蘭" },
+{ type: "city", hiragana: "のぼりべつし", kanji: "登別市", code: "30-1", note: "地方接続　室蘭" },
+{ type: "city", hiragana: "むろらんし", kanji: "室蘭市", code: "30-0", note: "地方接続　室蘭" },
+{ type: "gun", hiragana: "にしぐんおとべちょう", kanji: "爾志郡乙部町", code: "21-4", note: "地方接続　函館" },
+{ type: "gun", hiragana: "にしぐんくまいしちょう", kanji: "爾志郡熊石町", code: "29-7", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "のつけぐんべっかいちょう", kanji: "野付郡別海町", code: "64-1※後部", note: "地方接続　中標津" },
+{ type: "gun", hiragana: "ひだかぐんしんひだかちょう", kanji: "日高郡新ひだか町", code: "39-0", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "ひだかぐんしんひだかちょうみついし", kanji: "日高郡新ひだか町三石", code: "39-0", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "ひやまぐんあっさぶちょう", kanji: "檜山郡厚沢部町", code: "21-4", note: "地方接続　函館" },
+{ type: "gun", hiragana: "ひやまぐんえさしちょう", kanji: "檜山郡江差町", code: "21-4", note: "地方接続　函館<br><span style='color: red; font-weight: bold;'>枝幸町は21-4じゃない！！" },
+{ type: "gun", hiragana: "ひやまぐんかみのくにちょう", kanji: "檜山郡上ノ国町", code: "21-4", note: "地方接続　函館" },
+{ type: "gun", hiragana: "ひろおぐんたいきちょう", kanji: "広尾郡大樹町", code: "60-9", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "ひろおぐんひろおちょう", kanji: "広尾郡広尾町", code: "60-9", note: "地方接続　帯広" },
+{ type: "gun", hiragana: "ふたみぐんやくもちょう", kanji: "二海郡八雲町", code: "29-0", note: "地方接続　八雲" },
+{ type: "gun", hiragana: "ふたみぐんやくもちょうおとしべ", kanji: "二海郡八雲町落部", code: "29-1", note: "地方接続　八雲" },
+{ type: "city", hiragana: "もんべつし", kanji: "紋別市", code: "52-0※後部", note: "地方接続　紋別" },
+{ type: "gun", hiragana: "ふるうぐんかもえないむら", kanji: "古宇郡神恵内村", code: "22-7", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "ふるうぐんとまりむら", kanji: "古宇郡泊村", code: "22-7", note: "地方接続　倶知安" },
+{ type: "gun", hiragana: "ふるびらぐんふるびらちょう", kanji: "古平郡古平町", code: "20-1", note: "地方接続　小樽" },
+{ type: "gun", hiragana: "ほろいずみぐんえりもちょう", kanji: "幌泉郡えりも町", code: "39-4", note: "地方接続　新ひだか" },
+{ type: "gun", hiragana: "ましけぐんましけちょう", kanji: "増毛郡増毛町", code: "41-1※後部", note: "地方接続　留萌" },
+{ type: "gun", hiragana: "まつまえぐんふくしまちょう", kanji: "松前郡福島町", code: "21-5", note: "地方接続　函館" },
+{ type: "gun", hiragana: "まつまえぐんまつまえちょう", kanji: "松前郡松前町", code: "21-5", note: "地方接続　函館" },
+{ type: "gun", hiragana: "めなしぐんらうすちょう", kanji: "目梨郡羅臼町", code: "64-3※後部", note: "地方接続　中標津" },
+{ type: "gun", hiragana: "もんべつぐんえんがるちょう いくたはら", kanji: "紋別郡遠軽町 生田原", code: "50-5", note: "地方接続　北見" },
+{ type: "gun", hiragana: "もんべつぐんえんがるちょう", kanji: "紋別郡遠軽町", code: "50-5", note: "地方接続　北見" },
+{ type: "gun", hiragana: "もんべつぐんえんがるちょうしらたき", kanji: "紋別郡遠軽町白滝", code: "50-5", note: "地方接続　北見" },
+{ type: "gun", hiragana: "もんべつぐんえんがるちょうまるせっぷ", kanji: "紋別郡遠軽町丸瀬布", code: "50-5", note: "地方接続　北見" },
+{ type: "gun", hiragana: "もんべつぐんおうむちょう", kanji: "紋別郡雄武町", code: "52-3※後部", note: "地方接続　紋別" },
+{ type: "gun", hiragana: "もんべつぐんおこっぺちょう", kanji: "紋別郡興部町", code: "52-3※後部", note: "地方接続　紋別" },
+{ type: "gun", hiragana: "もんべつぐんかみゆうべつちょう", kanji: "紋別郡上湧別町", code: "52-2※後部", note: "地方接続　紋別" },
+{ type: "gun", hiragana: "もんべつぐんにしおこっぺむら", kanji: "紋別郡西興部村", code: "52-3※後部", note: "地方接続　紋別" },
+{ type: "gun", hiragana: "もんべつぐんゆうべつちょう", kanji: "紋別郡湧別町", code: "52-2※後部", note: "地方接続　紋別" },
+{ type: "gun", hiragana: "やまこしぐんおしゃまんべちょう", kanji: "山越郡長万部町", code: "29-4", note: "地方接続　八雲" },
 { type: "gun", hiragana: "ゆうばりぐんくりやまちょう", kanji: "夕張郡栗山町", code: "12-2", color: "blue" , note: "E棟　ローカル" },
 { type: "gun", hiragana: "ゆうばりぐんながぬまちょう", kanji: "夕張郡長沼町", code: "12-3", color: "blue" , note: "E棟　ローカル" },
-{ type: "city", hiragana: "るもいし", kanji: "留萌市", code: "41-0※後部", note: "A棟接続　留萌" },
+{ type: "city", hiragana: "るもいし", kanji: "留萌市", code: "41-0※後部", note: "地方接続　留萌" },
 { type: "gun", hiragana: "ゆうばりぐんゆにちょう", kanji: "夕張郡由仁町", code: "12-3", color: "blue" , note: "E棟　ローカル" },
-{ type: "gun", hiragana: "そうやぐんさるふつむら", kanji: "宗谷群猿払村", code: "43-1※後部", note: "A棟接続　稚内" },
-{ type: "gun", hiragana: "ゆうふつぐんあつまちょう", kanji: "勇払郡厚真町", code: "31-3", note: "A棟接続　苫小牧" },
-{ type: "gun", hiragana: "ゆうふつぐんあびらちょう", kanji: "勇払郡安平町", code: "31-4", note: "A棟接続　苫小牧" },
-{ type: "gun", hiragana: "ゆうふつぐんあびらちょうはやきた", kanji: "勇払郡安平町早来", code: "31-4", note: "A棟接続　苫小牧" },
-{ type: "gun", hiragana: "ゆうふつぐんしむかっぷむら", kanji: "勇払郡占冠村", code: "47-4", note: "A棟接続　富良野" },
-{ type: "gun", hiragana: "ゆうふつぐんしむかっぷむらとまむ", kanji: "勇払郡占冠村トマム", code: "47-4", note: "A棟接続　富良野" },
-{ type: "gun", hiragana: "ゆうふつぐんむかわちょう", kanji: "勇払郡むかわ町", code: "31-3", note: "A棟接続　苫小牧" },
-{ type: "gun", hiragana: "よいちぐんあかいがわむら", kanji: "余市郡赤井川村", code: "20-1", note: "A棟接続　小樽" },
-{ type: "city", hiragana: "わっかないし", kanji: "稚内市", code: "43-0※後部", note: "A棟接続　稚内" },
+{ type: "gun", hiragana: "そうやぐんさるふつむら", kanji: "宗谷群猿払村", code: "43-1※後部", note: "地方接続　稚内" },
+{ type: "gun", hiragana: "ゆうふつぐんあつまちょう", kanji: "勇払郡厚真町", code: "31-3", note: "地方接続　苫小牧" },
+{ type: "gun", hiragana: "ゆうふつぐんあびらちょう", kanji: "勇払郡安平町", code: "31-4", note: "地方接続　苫小牧" },
+{ type: "gun", hiragana: "ゆうふつぐんあびらちょうはやきた", kanji: "勇払郡安平町早来", code: "31-4", note: "地方接続　苫小牧" },
+{ type: "gun", hiragana: "ゆうふつぐんしむかっぷむら", kanji: "勇払郡占冠村", code: "47-4", note: "地方接続　富良野" },
+{ type: "gun", hiragana: "ゆうふつぐんしむかっぷむらとまむ", kanji: "勇払郡占冠村トマム", code: "47-4", note: "地方接続　富良野" },
+{ type: "gun", hiragana: "ゆうふつぐんむかわちょう", kanji: "勇払郡むかわ町", code: "31-3", note: "地方接続　苫小牧" },
+{ type: "gun", hiragana: "よいちぐんあかいがわむら", kanji: "余市郡赤井川村", code: "20-1", note: "地方接続　小樽" },
+{ type: "city", hiragana: "わっかないし", kanji: "稚内市", code: "43-0※後部", note: "地方接続　稚内" },
 { type: "city", hiragana: "さっぽろしちゅうおうく", kanji: "札幌市中央区", code: "C-1", color: "blue" , note: "D棟　市内" },
 { type: "city", hiragana: "さっぽろしみなみく", kanji: "札幌市南区", code: "C-2", color: "blue" , note: "D棟　市内" },
 { type: "city", hiragana: "さっぽろし豊平区", kanji: "札幌市豊平区", code: "C-3", color: "blue" , note: "D棟　市内" },
@@ -351,8 +399,8 @@ const data = [
 { type: "city", hiragana: "おたるしはりうすちょう", kanji: "小樽市", code: "10-0", color: "blue" , note: "E棟　ローカル" },
 { type: "city", hiragana: "おたるしはるかちょう", kanji: "小樽市", code: "10-0", color: "blue" , note: "E棟　ローカル" },
 { type: "city", hiragana: "きたひろしまし", kanji: "北広島市", code: "12-6", color: "blue" , note: "E棟　ローカル" },
-{ type: "gun", hiragana: "よいちぐんにきちょう", kanji: "余市郡仁木町", code: "20-1", note: "A棟接続　小樽" },
-{ type: "gun", hiragana: "よいちぐんよいちちょう", kanji: "余市郡余市町", code: "20-1", note: "A棟接続　小樽" },
+{ type: "gun", hiragana: "よいちぐんにきちょう", kanji: "余市郡仁木町", code: "20-1", note: "地方接続　小樽" },
+{ type: "gun", hiragana: "よいちぐんよいちちょう", kanji: "余市郡余市町", code: "20-1", note: "地方接続　小樽" },
 { type: "city", hiragana: "ちとせし", kanji: "千歳市", code: "12-4", color: "blue" , note: "E棟　ローカル" },
 { type: "city", hiragana: "ちとせしくうこう", kanji: "千歳市空港", code: "12-9", color: "blue" , note: "E棟　ローカル" },
 { type: "city", hiragana: "ちとせししこつこ", kanji: "千歳市支笏湖", code: "12-9", color: "blue" , note: "E棟　ローカル" },
@@ -363,11 +411,11 @@ const data = [
 { type: "city", hiragana: "ちとせしもらっぷ", kanji: "千歳市モラップ", code: "12-9", color: "blue" , note: "E棟　ローカル" },
 { type: "city", hiragana: "ちとせしおこたん", kanji: "千歳市奥譚", code: "12-9", color: "blue" , note: "E棟　ローカル" },
 { type: "city", hiragana: "ちとせしほろか", kanji: "千歳市幌加", code: "12-4", color: "blue" , note: "E棟　ローカル" },
-{ type: "gun", hiragana: "りしりぐんりしりちょう", kanji: "利尻郡利尻町", code: "43-4※後部", note: "A棟接続　稚内" },
-{ type: "gun", hiragana: "りしりぐんりしりふじちょう", kanji: "利尻郡利尻富士町", code: "43-4※後部", note: "A棟接続　稚内" },
-{ type: "gun", hiragana: "るもいぐんおびらちょう", kanji: "留萌郡小平町", code: "41-2※後部", note: "A棟接続　留萌" },
+{ type: "gun", hiragana: "りしりぐんりしりちょう", kanji: "利尻郡利尻町", code: "43-4※後部", note: "地方接続　稚内" },
+{ type: "gun", hiragana: "りしりぐんりしりふじちょう", kanji: "利尻郡利尻富士町", code: "43-4※後部", note: "地方接続　稚内" },
+{ type: "gun", hiragana: "るもいぐんおびらちょう", kanji: "留萌郡小平町", code: "41-2※後部", note: "地方接続　留萌" },
 { type: "city", hiragana: "ゆうばりし", kanji: "夕張市", code: "12-3", color: "blue" , note: "E棟　ローカル" },
-{ type: "gun", hiragana: "れぶんぐんれぶんちょう", kanji: "礼文郡礼文町", code: "43-4※後部", note: "A棟接続　稚内" }
+{ type: "gun", hiragana: "れぶんぐんれぶんちょう", kanji: "礼文郡礼文町", code: "43-4※後部", note: "地方接続　稚内" }
 
 
 ];
@@ -384,6 +432,9 @@ const gunList = [
 ];
 const gunSelect  = document.getElementById("gunSelect");
 const gunButtons = document.getElementById("gunButtons");
+
+let localColor = "red"; // 地方で使う色(ユーザー選択)
+let nonLocalColor = "blue"; // それ以外(自動で反転)
 
 let currentMode = "";
 
@@ -474,21 +525,35 @@ showResults(filtered);
 }
 
 function showResults(list){
-list.forEach(d => {
-const div = document.createElement("div");
-div.className = "result";
+  list.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "result";
 
-const color = d.color ? d.color : "red";
+    let color;
+    if (d.color === "blue") {
+      color = nonLocalColor;
+    } else {
+      color = localColor;
+    }
 
-div.innerHTML = `
-     <div class="code" style="color:${color};">${d.code}</div>
-     <div><strong>${d.kanji}</strong></div>
-     ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
-     ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
-   `;
-results.appendChild(div);
-});
+    div.innerHTML = `
+      <div class="code" style="color:${color};">${d.code}</div>
+      <div><strong>${d.kanji}</strong></div>
+      ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
+      ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
+    `;
+    results.appendChild(div);
+  });
 }
+
+document.querySelectorAll('input[name="resultColor"]').forEach(radio => {
+  radio.addEventListener("change", e => {
+    localColor = e.target.value;
+    nonLocalColor = (localColor === "red") ? "blue" : "red";
+  });
+});
+
+
 </script>
 
 </body>
