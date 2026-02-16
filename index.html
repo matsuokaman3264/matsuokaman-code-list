@@ -536,12 +536,13 @@ function showResults(list){
       color = localColor;
     }
 
-    div.innerHTML = `
-      <div class="code" style="color:${color};">${d.code}</div>
-      <div><strong>${d.kanji}</strong></div>
-      ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
-      ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
-    `;
+div.innerHTML = `
+  <div class="code" style="color:${color};">${d.code}</div>
+  <div class="furigana">${d.hiragana}</div>
+  <div><strong>${d.kanji}</strong></div>
+  ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
+  ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
+`;
     results.appendChild(div);
   });
 }
