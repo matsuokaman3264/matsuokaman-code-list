@@ -63,6 +63,13 @@
   background: rgba(0,0,0,0.05);
 }
 
+.connection-box {
+  font-size: 1.4em;      /* 文字を大きく */
+  padding: 14px 24px;    /* ボタンサイズ拡大 */
+  border-width: 3px;     /* 枠線を太く */
+  min-width: 160px;      /* 横幅確保 */
+}
+
 
 body {
 font-family: sans-serif;
@@ -132,6 +139,22 @@ margin-top:20px;
     青
   </label>
 </div>
+
+<div style="margin:15px 0;">
+  <strong>接続先を選択</strong><br>
+
+<label class="color-box connection-box">
+  <input type="radio" name="connectionType" value="A棟接続" checked>
+  A棟接続
+</label>
+
+<label class="color-box connection-box">
+  <input type="radio" name="connectionType" value="苫小牧接続">
+  苫小牧接続
+</label>
+</div>
+
+
 
 <button onclick="selectMode('city')">市で見る</button>
 <button onclick="selectMode('gun')">郡で見る</button>
@@ -435,6 +458,7 @@ const gunButtons = document.getElementById("gunButtons");
 
 let localColor = "red"; // 地方で使う色(ユーザー選択)
 let nonLocalColor = "blue"; // それ以外(自動で反転)
+let connectionLabel = "A棟接続"; // デフォルト
 
 let currentMode = "";
 
@@ -536,13 +560,20 @@ function showResults(list){
       color = localColor;
     }
 
-div.innerHTML = `
-  <div class="code" style="color:${color};">${d.code}</div>
-  <div class="furigana">${d.hiragana}</div>
-  <div><strong>${d.kanji}</strong></div>
-  ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
-  ${d.note ? `<div class="note">※ ${d.note}</div>` : ""}
-`;
+    // ★ ここで接続文字を置換
+    let noteText = "";
+    if (d.note) {
+      noteText = d.note.replace("地方接続", connectionLabel);
+    }
+
+    div.innerHTML = `
+      <div class="code" style="color:${color};">${d.code}</div>
+      <div class="furigana">${d.hiragana}</div>
+      <div><strong>${d.kanji}</strong></div>
+      ${d.zipcode ? `<div class="sub">〒${d.zipcode}</div>` : ""}
+      ${noteText ? `<div class="note">※ ${noteText}</div>` : ""}
+    `;
+
     results.appendChild(div);
   });
 }
@@ -551,6 +582,12 @@ document.querySelectorAll('input[name="resultColor"]').forEach(radio => {
   radio.addEventListener("change", e => {
     localColor = e.target.value;
     nonLocalColor = (localColor === "red") ? "blue" : "red";
+  });
+});
+
+document.querySelectorAll('input[name="connectionType"]').forEach(radio => {
+  radio.addEventListener("change", e => {
+    connectionLabel = e.target.value;
   });
 });
 
